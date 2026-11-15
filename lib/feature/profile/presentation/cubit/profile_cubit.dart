@@ -1,8 +1,8 @@
-import 'package:clean_arch_session/core/cache/profile_cache.dart';
-import 'package:clean_arch_session/core/networking/api_error_handler.dart';
-import 'package:clean_arch_session/feature/profile/domain/usecases/get_profile_usecase.dart';
-import 'package:clean_arch_session/feature/profile/domain/usecases/update_profile_usecase.dart';
-import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_state.dart';
+import 'package:e_commerce_customer/core/cache/profile_cache.dart';
+import 'package:e_commerce_customer/core/networking/api_error_handler.dart';
+import 'package:e_commerce_customer/feature/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:e_commerce_customer/feature/profile/domain/usecases/update_profile_usecase.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/cubit/profile_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,5 +1,5 @@
-import 'package:clean_arch_session/feature/store/domain/entities/store_entities.dart';
-import 'package:clean_arch_session/feature/store/domain/repositories/store_repository.dart';
+import 'package:e_commerce_customer/feature/store/domain/entities/store_entities.dart';
+import 'package:e_commerce_customer/feature/store/domain/repositories/store_repository.dart';
 
 class FavoriteUseCases {
   final StoreRepository _repository;

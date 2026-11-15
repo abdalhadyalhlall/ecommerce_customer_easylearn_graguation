@@ -1,5 +1,6 @@
-import 'package:clean_arch_session/core/theme/app_colors.dart';
-import 'package:clean_arch_session/core/helpers/location_helper.dart';
+import 'package:e_commerce_customer/core/theme/app_colors.dart';
+import 'package:e_commerce_customer/core/helpers/location_helper.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -29,9 +30,9 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Select Location',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
         ),
       ),
       body: Stack(
@@ -52,12 +53,12 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                 markers: [
                   Marker(
                     point: _selectedLocation,
-                    width: 44,
-                    height: 44,
-                    child: const Icon(
+                    width: 44.w,
+                    height: 44.h,
+                    child: Icon(
                       Icons.location_pin,
                       color: AppColors.primary,
-                      size: 42,
+                      size: 42.r,
                     ),
                   ),
                 ],
@@ -70,38 +71,38 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
             ],
           ),
           PositionedDirectional(
-            top: 16,
-            end: 16,
+            top: 16.r,
+            end: 16.r,
             child: FloatingActionButton.small(
               heroTag: 'current-location',
               onPressed: _gettingCurrentLocation ? null : _goToCurrentLocation,
               backgroundColor: AppColors.surface,
               foregroundColor: AppColors.primary,
               child: _gettingCurrentLocation
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                  ? SizedBox(
+                      width: 18.w,
+                      height: 18.h,
+                      child: CircularProgressIndicator(strokeWidth: 2.r),
                     )
                   : const Icon(Icons.my_location_rounded),
             ),
           ),
           Positioned(
-            left: 16,
-            right: 16,
-            bottom: 18,
+            left: 16.r,
+            right: 16.r,
+            bottom: 18.r,
             child: SafeArea(
               top: false,
               child: Container(
-                padding: const EdgeInsets.all(14),
+                padding: EdgeInsets.all(14.r),
                 decoration: BoxDecoration(
                   color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: const [
+                  borderRadius: BorderRadius.circular(18.r),
+                  boxShadow: [
                     BoxShadow(
                       color: AppColors.strongShadow,
-                      blurRadius: 16,
-                      offset: Offset(0, 4),
+                      blurRadius: 16.r,
+                      offset: Offset(0.r, 4.r),
                     ),
                   ],
                 ),
@@ -109,27 +110,27 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
+                    Text(
                       'Tap the map to choose your delivery location',
                       style: TextStyle(
                         color: AppColors.ink,
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: 5.h),
                     Text(
                       '${_selectedLocation.latitude.toStringAsFixed(6)}, '
                       '${_selectedLocation.longitude.toStringAsFixed(6)}',
                       textDirection: TextDirection.ltr,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.muted,
-                        fontSize: 11,
+                        fontSize: 11.sp,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     SizedBox(
-                      height: 46,
+                      height: 46.h,
                       child: FilledButton(
                         onPressed: () =>
                             Navigator.pop(context, _selectedLocation),

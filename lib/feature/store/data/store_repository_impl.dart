@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:clean_arch_session/core/cache/cart_cache.dart';
-import 'package:clean_arch_session/core/networking/api_constants.dart';
-import 'package:clean_arch_session/core/networking/api_service.dart';
-import 'package:clean_arch_session/core/payments/paymob_constants.dart';
-import 'package:clean_arch_session/feature/store/domain/entities/store_entities.dart';
-import 'package:clean_arch_session/feature/store/domain/repositories/store_repository.dart';
+import 'package:e_commerce_customer/core/cache/cart_cache.dart';
+import 'package:e_commerce_customer/core/networking/api_constants.dart';
+import 'package:e_commerce_customer/core/networking/api_service.dart';
+import 'package:e_commerce_customer/core/payments/paymob_constants.dart';
+import 'package:e_commerce_customer/feature/store/domain/entities/store_entities.dart';
+import 'package:e_commerce_customer/feature/store/domain/repositories/store_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class StoreRepositoryImpl implements StoreRepository {

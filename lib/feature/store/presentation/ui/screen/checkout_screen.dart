@@ -1,13 +1,16 @@
-import 'package:clean_arch_session/core/theme/app_colors.dart';
-import 'package:clean_arch_session/core/helpers/location_picker_helper.dart';
-import 'package:clean_arch_session/core/helpers/location_helper.dart';
-import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_cubit.dart';
-import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_state.dart';
-import 'package:clean_arch_session/feature/profile/domain/entities/client_profile.dart';
-import 'package:clean_arch_session/feature/store/domain/entities/store_entities.dart';
-import 'package:clean_arch_session/feature/store/presentation/cubit/store_cubit.dart';
-import 'package:clean_arch_session/feature/store/presentation/cubit/store_state.dart';
-import 'package:clean_arch_session/feature/store/presentation/ui/screen/order_success_screen.dart';
+import 'package:e_commerce_customer/core/theme/app_colors.dart';
+import 'package:e_commerce_customer/core/helpers/location_picker_helper.dart';
+import 'package:e_commerce_customer/core/helpers/location_helper.dart';
+import 'package:e_commerce_customer/core/helpers/app_helpers.dart';
+import 'package:e_commerce_customer/core/helpers/context_extensions.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/cubit/profile_cubit.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/cubit/profile_state.dart';
+import 'package:e_commerce_customer/feature/profile/domain/entities/client_profile.dart';
+import 'package:e_commerce_customer/feature/store/domain/entities/store_entities.dart';
+import 'package:e_commerce_customer/feature/store/presentation/cubit/store_cubit.dart';
+import 'package:e_commerce_customer/feature/store/presentation/cubit/store_state.dart';
+import 'package:e_commerce_customer/feature/store/presentation/ui/screen/order_success_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
@@ -66,21 +69,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       });
     } on LocationFailure catch (failure) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.message)));
+      context.showSnackBar(failure.message, isError: true);
     }
   }
 
   Future<void> _placeOrder() async {
     final address = _deliveryAddress?.trim() ?? '';
     if (address.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'No saved address was found. Choose a delivery location on the map or add an address to your profile.',
-          ),
-        ),
+      context.showSnackBar(
+        'No saved address was found. Choose a delivery location on the map or add an address to your profile.',
+        isError: true,
       );
       return;
     }
@@ -116,9 +114,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       backgroundColor: AppColors.canvas,
       appBar: AppBar(
         backgroundColor: AppColors.surface,
-        title: const Text(
+        title: Text(
           'Checkout',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700),
         ),
       ),
       body: BlocListener<ProfileCubit, ProfileState>(
@@ -131,7 +129,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               children: [
                 Expanded(
                   child: ListView(
-                    padding: const EdgeInsets.fromLTRB(18, 18, 18, 22),
+                    padding: EdgeInsets.fromLTRB(18.r, 18.r, 18.r, 22.r),
                     children: [
                       _CheckoutSection(
                         title: 'Delivery Address',
@@ -139,24 +137,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 13,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 14.r,
+                                vertical: 13.r,
                               ),
                               decoration: BoxDecoration(
                                 color: AppColors.canvas,
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius: BorderRadius.circular(14.r),
                                 border: Border.all(color: AppColors.border),
                               ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.location_on_outlined,
                                     color: AppColors.primary,
-                                    size: 22,
+                                    size: 22.r,
                                   ),
-                                  const SizedBox(width: 10),
+                                  horizontalSpace(10),
                                   Expanded(
                                     child: Text(
                                       _deliveryAddress?.isNotEmpty == true
@@ -167,7 +165,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             _deliveryAddress?.isNotEmpty == true
                                             ? AppColors.ink
                                             : AppColors.muted,
-                                        fontSize: 16,
+                                        fontSize: 16.sp,
                                         height: 1.4,
                                       ),
                                     ),
@@ -179,15 +177,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               alignment: AlignmentDirectional.centerStart,
                               child: TextButton.icon(
                                 onPressed: _changeLocation,
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.location_on_outlined,
-                                  size: 20,
+                                  size: 20.r,
                                 ),
                                 label: Text(
                                   _locationChanged
                                       ? 'Location updated · Change again'
                                       : 'Change Location',
-                                  style: const TextStyle(fontSize: 15),
+                                  style: TextStyle(fontSize: 15.sp),
                                 ),
                                 style: TextButton.styleFrom(
                                   foregroundColor: AppColors.primary,
@@ -197,7 +195,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       _CheckoutSection(
                         title: 'Order Items',
                         child: Column(
@@ -206,7 +204,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               .toList(),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       _CheckoutSection(
                         title: 'Payment Method',
                         child: Column(
@@ -218,7 +216,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               onTap: () =>
                                   setState(() => _paymentMethod = 'cash'),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8.h),
                             _PaymentChoice(
                               title: 'Credit / Debit Card',
                               icon: Icons.credit_card_outlined,
@@ -229,7 +227,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       _CheckoutSection(
                         title: 'Order Summary',
                         child: Column(
@@ -239,33 +237,33 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 Expanded(
                                   child: Text(
                                     'Items (${state.cartItems.length})',
-                                    style: const TextStyle(fontSize: 15),
+                                    style: TextStyle(fontSize: 15.sp),
                                   ),
                                 ),
                                 Text(
                                   '${state.cartTotal.toStringAsFixed(0)} EGP',
-                                  style: const TextStyle(fontSize: 15),
+                                  style: TextStyle(fontSize: 15.sp),
                                 ),
                               ],
                             ),
-                            const Divider(height: 20),
+                            Divider(height: 20.h),
                             Row(
                               children: [
-                                const Expanded(
+                                Expanded(
                                   child: Text(
                                     'Total',
                                     style: TextStyle(
                                       color: AppColors.ink,
-                                      fontSize: 17,
+                                      fontSize: 17.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                 ),
                                 Text(
                                   '${state.cartTotal.toStringAsFixed(0)} EGP',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: AppColors.primary,
-                                    fontSize: 22,
+                                    fontSize: 22.sp,
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),
@@ -280,21 +278,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 SafeArea(
                   top: false,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 10, 18, 16),
+                    padding: EdgeInsets.fromLTRB(18.r, 10.r, 18.r, 16.r),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 58,
+                      height: 58.h,
                       child: FilledButton(
                         onPressed: state.busy ? null : _placeOrder,
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.primary,
                         ),
                         child: state.busy
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
+                            ? SizedBox(
+                                width: 20.w,
+                                height: 20.h,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                                  strokeWidth: 2.r,
                                   color: AppColors.surface,
                                 ),
                               )
@@ -302,8 +300,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 _paymentMethod == 'card'
                                     ? 'Continue to Paymob'
                                     : 'Place Order',
-                                style: const TextStyle(
-                                  fontSize: 16,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -349,15 +347,15 @@ class _CheckoutSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(18.r),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
           BoxShadow(
             color: AppColors.shadow,
-            blurRadius: 10,
-            offset: Offset(0, 3),
+            blurRadius: 10.r,
+            offset: Offset(0.r, 3.r),
           ),
         ],
       ),
@@ -366,13 +364,13 @@ class _CheckoutSection extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.ink,
-              fontSize: 17,
+              fontSize: 17.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
           child,
         ],
       ),
@@ -389,14 +387,14 @@ class _CheckoutItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final image = item.product.image;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8.r),
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             child: SizedBox(
-              width: 66,
-              height: 66,
+              width: 66.w,
+              height: 66.h,
               child: image == null || image.isEmpty
                   ? const ColoredBox(
                       color: AppColors.primaryContainer,
@@ -418,7 +416,7 @@ class _CheckoutItem extends StatelessWidget {
                     ),
             ),
           ),
-          const SizedBox(width: 14),
+          horizontalSpace(14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -427,24 +425,24 @@ class _CheckoutItem extends StatelessWidget {
                   item.product.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.ink,
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 Text(
                   'Qty: ${item.quantity}',
-                  style: const TextStyle(color: AppColors.muted, fontSize: 14),
+                  style: TextStyle(color: AppColors.muted, fontSize: 14.sp),
                 ),
               ],
             ),
           ),
           Text(
             '${item.subtotal.toStringAsFixed(0)} EGP',
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.ink,
-              fontSize: 15,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -471,30 +469,30 @@ class _PaymentChoice extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(14.r),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+        padding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 15.r),
         decoration: BoxDecoration(
           color: selected ? AppColors.primaryContainer : AppColors.surface,
           border: Border.all(
             color: selected ? AppColors.primary : AppColors.border,
           ),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
         ),
         child: Row(
           children: [
             Icon(
               icon,
               color: selected ? AppColors.primary : AppColors.muted,
-              size: 23,
+              size: 23.r,
             ),
-            const SizedBox(width: 8),
+            horizontalSpace(8),
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppColors.ink,
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -504,7 +502,7 @@ class _PaymentChoice extends StatelessWidget {
                   ? Icons.radio_button_checked
                   : Icons.radio_button_unchecked,
               color: selected ? AppColors.primary : AppColors.muted,
-              size: 22,
+              size: 22.r,
             ),
           ],
         ),

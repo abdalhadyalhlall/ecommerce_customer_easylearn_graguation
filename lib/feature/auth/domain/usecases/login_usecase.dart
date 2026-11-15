@@ -1,4 +1,4 @@
-import 'package:clean_arch_session/feature/auth/domain/repositories/auth_repo.dart';
+import 'package:e_commerce_customer/feature/auth/domain/repositories/auth_repo.dart';
 
 class LoginUseCase {
   final AuthRepo _authRepo;

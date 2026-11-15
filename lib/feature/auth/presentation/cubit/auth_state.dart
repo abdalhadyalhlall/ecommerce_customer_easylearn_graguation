@@ -6,6 +6,12 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
+class AuthRegistered extends AuthState {
+  final String message;
+
+  AuthRegistered(this.message);
+}
+
 class AuthOtpRequired extends AuthState {
   final String email;
   final String message;

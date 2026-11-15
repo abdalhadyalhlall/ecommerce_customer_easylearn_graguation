@@ -1,9 +1,10 @@
-import 'package:clean_arch_session/core/theme/app_colors.dart';
-import 'package:clean_arch_session/feature/auth/presentation/cubit/auth_cubit.dart';
-import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_cubit.dart';
-import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_state.dart';
-import 'package:clean_arch_session/feature/profile/presentation/ui/screen/edit_profile_screen.dart';
-import 'package:clean_arch_session/feature/profile/presentation/ui/widget/profile_widgets.dart';
+import 'package:e_commerce_customer/core/theme/app_colors.dart';
+import 'package:e_commerce_customer/feature/auth/presentation/cubit/auth_cubit.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/cubit/profile_cubit.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/cubit/profile_state.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/ui/screen/edit_profile_screen.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/ui/widget/profile_widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,22 +31,22 @@ class ProfileScreen extends StatelessWidget {
         if (profile == null) {
           return Center(
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24.r),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.person_off_outlined,
                     color: AppColors.muted,
-                    size: 42,
+                    size: 42.r,
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Text(
                     state.error ?? 'Unable to load your profile.',
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: AppColors.muted),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   OutlinedButton(
                     onPressed: context.read<ProfileCubit>().loadProfile,
                     child: const Text('Try again'),
@@ -59,14 +60,14 @@ class ProfileScreen extends StatelessWidget {
         return RefreshIndicator(
           onRefresh: context.read<ProfileCubit>().loadProfile,
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            padding: EdgeInsets.fromLTRB(16.r, 16.r, 16.r, 24.r),
             children: [
               if (state.error != null || state.message != null) ...[
                 ProfileFeedback(
                   text: state.error ?? state.message!,
                   isError: state.error != null,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
               ],
               _ProfileSummary(
                 name: profile.name,
@@ -74,10 +75,10 @@ class ProfileScreen extends StatelessWidget {
                 phone: profile.phone,
                 imageUrl: profile.pictureUrl,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Material(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(18.r),
                 elevation: 2,
                 shadowColor: AppColors.shadow,
                 clipBehavior: Clip.antiAlias,
@@ -115,18 +116,18 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.h),
               SizedBox(
-                height: 45,
+                height: 45.h,
                 child: TextButton.icon(
                   onPressed: () => context.read<AuthCubit>().logout(),
-                  icon: const Icon(Icons.logout_rounded, size: 16),
+                  icon: Icon(Icons.logout_rounded, size: 16.r),
                   label: const Text('Logout'),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.error,
                     backgroundColor: AppColors.error.withValues(alpha: 0.06),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(13),
+                      borderRadius: BorderRadius.circular(13.r),
                     ),
                   ),
                 ),
@@ -138,10 +139,10 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _separator() => const Divider(
-    height: 1,
-    indent: 46,
-    endIndent: 14,
+  Widget _separator() => Divider(
+    height: 1.h,
+    indent: 46.w,
+    endIndent: 14.w,
     color: AppColors.border,
   );
 
@@ -173,23 +174,23 @@ class _ProfileSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(17),
+      padding: EdgeInsets.all(17.r),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(18.r),
         border: Border.all(color: AppColors.border.withValues(alpha: 0.65)),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
             color: AppColors.shadow,
-            blurRadius: 12,
-            offset: Offset(0, 3),
+            blurRadius: 12.r,
+            offset: Offset(0.r, 3.r),
           ),
         ],
       ),
       child: Row(
         children: [
-          ProfileAvatar(imageUrl: imageUrl, name: name, radius: 29),
-          const SizedBox(width: 14),
+          ProfileAvatar(imageUrl: imageUrl, name: name, radius: 29.r),
+          SizedBox(width: 14.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,27 +199,27 @@ class _ProfileSummary extends StatelessWidget {
                   name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.ink,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 3),
+                SizedBox(height: 3.h),
                 Text(
                   email,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.muted,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                   ),
                 ),
                 Text(
                   phone,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.muted,
-                    fontSize: 11,
+                    fontSize: 11.sp,
                   ),
                 ),
               ],

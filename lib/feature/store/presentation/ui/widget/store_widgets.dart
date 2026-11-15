@@ -14,21 +14,21 @@ class _CartNavigationIcon extends StatelessWidget {
           Icon(icon),
           if (state.cartItems.isNotEmpty)
             Positioned(
-              top: -7,
-              right: -9,
+              top: -7.r,
+              right: -9.r,
               child: Container(
-                constraints: const BoxConstraints(minWidth: 17, minHeight: 17),
+                constraints: BoxConstraints(minWidth: 17.w, minHeight: 17.h),
                 alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding: EdgeInsets.symmetric(horizontal: 4.r),
                 decoration: const BoxDecoration(
                   color: AppColors.error,
                   shape: BoxShape.circle,
                 ),
                 child: Text(
                   '${state.cartItems.length}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.surface,
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -90,19 +90,19 @@ class _CatalogTabState extends State<_CatalogTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(16, 15, 16, 0),
+                    Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(16.r, 15.r, 16.r, 0.r),
                       child: Text(
                         'Categories',
                         style: TextStyle(
                           color: AppColors.ink,
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
                     SizedBox(
-                      height: 52,
+                      height: 52.h,
                       child: state.loadingCategories && state.categories.isEmpty
                           ? const Center(
                               child: CircularProgressIndicator(
@@ -110,11 +110,11 @@ class _CatalogTabState extends State<_CatalogTab> {
                               ),
                             )
                           : ListView(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                16,
-                                8,
-                                16,
-                                6,
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                16.r,
+                                8.r,
+                                16.r,
+                                6.r,
                               ),
                               scrollDirection: Axis.horizontal,
                               children: [
@@ -140,29 +140,29 @@ class _CatalogTabState extends State<_CatalogTab> {
                             ),
                     ),
                     Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                        16,
-                        7,
-                        16,
-                        5,
+                      padding: EdgeInsetsDirectional.fromSTEB(
+                        16.r,
+                        7.r,
+                        16.r,
+                        5.r,
                       ),
                       child: Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Text(
                               'Products',
                               style: TextStyle(
                                 color: AppColors.ink,
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
                           Text(
                             '${products.length} items',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.muted,
-                              fontSize: 10,
+                              fontSize: 10.sp,
                             ),
                           ),
                         ],
@@ -172,7 +172,7 @@ class _CatalogTabState extends State<_CatalogTab> {
                 ),
               ),
               SliverPadding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16, 5, 16, 20),
+                padding: EdgeInsetsDirectional.fromSTEB(16.r, 5.r, 16.r, 20.r),
                 sliver: state.loadingProducts && state.products.isEmpty
                     ? const SliverFillRemaining(
                         hasScrollBody: false,
@@ -253,7 +253,7 @@ class _CatalogHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 22, 16, 0),
+      padding: EdgeInsetsDirectional.fromSTEB(16.r, 22.r, 16.r, 0.r),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -263,22 +263,22 @@ class _CatalogHeader extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'GOOD MORNING,',
                       style: TextStyle(
                         color: AppColors.muted,
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         letterSpacing: 0.4,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2.h),
                     Text(
                       '$name 👋',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.ink,
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -294,23 +294,23 @@ class _CatalogHeader extends StatelessWidget {
                       .selectedCategorySlug,
                   refresh: true,
                 ),
-                icon: const Icon(
+                icon: Icon(
                   Icons.notifications_none_rounded,
                   color: AppColors.primary,
-                  size: 20,
+                  size: 20.r,
                 ),
               ),
               InkWell(
                 onTap: onProfileTap,
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(22.r),
                 child: CircleAvatar(
-                  radius: 16,
+                  radius: 16.r,
                   backgroundColor: AppColors.primary,
                   child: Text(
                     _profileInitials(name),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.surface,
-                      fontSize: 10,
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -318,28 +318,28 @@ class _CatalogHeader extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           TextField(
             controller: searchController,
             onChanged: onSearchChanged,
             textDirection: TextDirection.ltr,
             decoration: InputDecoration(
               hintText: 'Search products...',
-              hintStyle: const TextStyle(color: AppColors.muted, fontSize: 12),
-              prefixIcon: const Icon(
+              hintStyle: TextStyle(color: AppColors.muted, fontSize: 12.sp),
+              prefixIcon: Icon(
                 Icons.search_rounded,
                 color: AppColors.muted,
-                size: 19,
+                size: 19.r,
               ),
               filled: true,
               fillColor: const Color(0xFFF9FAFB),
-              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+              contentPadding: EdgeInsets.symmetric(vertical: 10.r),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 borderSide: const BorderSide(color: AppColors.border),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 borderSide: const BorderSide(color: AppColors.border),
               ),
             ),
@@ -375,7 +375,7 @@ class _CategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.only(end: 8),
+      padding: EdgeInsetsDirectional.only(end: 8.r),
       child: ChoiceChip(
         label: Text(label),
         selected: selected,
@@ -390,7 +390,7 @@ class _CategoryChip extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
         showCheckmark: false,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.r)),
       ),
     );
   }
@@ -418,39 +418,39 @@ class _FavoritesTab extends StatelessWidget {
         return RefreshIndicator(
           onRefresh: context.read<StoreCubit>().loadFavorites,
           child: ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.r),
             itemCount: state.favorites.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => SizedBox(height: 12.h),
             itemBuilder: (context, index) {
               final item = state.favorites[index];
               return Material(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(18.r),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(18.r),
                   onTap: () => _openProductDetails(context, item.product),
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(12.r),
                     child: Row(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(13),
+                          borderRadius: BorderRadius.circular(13.r),
                           child: SizedBox(
-                            width: 68,
-                            height: 68,
+                            width: 68.w,
+                            height: 68.h,
                             child: _ProductImage(url: item.product.image),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 item.product.categoryName ?? '',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: AppColors.primary,
-                                  fontSize: 11,
+                                  fontSize: 11.sp,
                                 ),
                               ),
                               Text(
@@ -474,9 +474,9 @@ class _FavoritesTab extends StatelessWidget {
                                   'by ${item.product.publisher!.displayName}',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: AppColors.muted,
-                                    fontSize: 10,
+                                    fontSize: 10.sp,
                                   ),
                                 ),
                             ],
@@ -539,12 +539,12 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: AppColors.surface,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(20.r),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(10.r),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -553,13 +553,13 @@ class _ProductCard extends StatelessWidget {
                   children: [
                     Positioned.fill(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(15.r),
                         child: _ProductImage(url: product.image),
                       ),
                     ),
                     PositionedDirectional(
-                      top: 8,
-                      end: 8,
+                      top: 8.r,
+                      end: 8.r,
                       child: IconButton(
                         tooltip: isFavorite
                             ? 'Remove from favorites'
@@ -569,14 +569,14 @@ class _ProductCard extends StatelessWidget {
                           backgroundColor: AppColors.surface.withValues(
                             alpha: 0.9,
                           ),
-                          minimumSize: const Size(34, 34),
+                          minimumSize: Size(34.r, 34.r),
                         ),
                         icon: Icon(
                           isFavorite
                               ? Icons.favorite_rounded
                               : Icons.favorite_border_rounded,
                           color: isFavorite ? AppColors.error : AppColors.muted,
-                          size: 19,
+                          size: 19.r,
                         ),
                       ),
                     ),
@@ -590,64 +590,64 @@ class _ProductCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 11),
+              SizedBox(height: 11.h),
               if (product.categoryName != null)
                 Text(
                   product.categoryName!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.primary,
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(
                 product.name,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppColors.ink,
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
                   height: 1.3,
                 ),
               ),
               if (product.publisher != null) ...[
-                const SizedBox(height: 3),
+                SizedBox(height: 3.h),
                 Text(
                   'by ${product.publisher!.displayName}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: AppColors.muted, fontSize: 10),
+                  style: TextStyle(color: AppColors.muted, fontSize: 10.sp),
                 ),
               ],
-              const SizedBox(height: 9),
+              SizedBox(height: 9.h),
               Row(
                 children: [
                   Expanded(
                     child: Text(
                       _price(product.price),
                       textDirection: TextDirection.ltr,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.primary,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
                   ),
                   Container(
-                    width: 34,
-                    height: 34,
+                    width: 34.w,
+                    height: 34.h,
                     decoration: BoxDecoration(
                       color: AppColors.primaryContainer,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.arrow_forward_rounded,
                       color: AppColors.primary,
-                      size: 18,
+                      size: 18.r,
                     ),
                   ),
                 ],
@@ -686,11 +686,11 @@ class _ImagePlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.primaryContainer,
-      child: const Center(
+      child: Center(
         child: Icon(
           Icons.inventory_2_outlined,
           color: AppColors.primary,
-          size: 42,
+          size: 42.r,
         ),
       ),
     );
@@ -722,23 +722,23 @@ class _CartTab extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.separated(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16.r),
                 itemCount: state.cartItems.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 12),
+                separatorBuilder: (_, _) => SizedBox(height: 12.h),
                 itemBuilder: (context, index) =>
                     _CartItemCard(item: state.cartItems[index]),
               ),
             ),
             Container(
-              padding: const EdgeInsets.fromLTRB(20, 17, 20, 18),
-              decoration: const BoxDecoration(
+              padding: EdgeInsets.fromLTRB(20.r, 17.r, 20.r, 18.r),
+              decoration: BoxDecoration(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.shadow,
-                    blurRadius: 16,
-                    offset: Offset(0, -4),
+                    blurRadius: 16.r,
+                    offset: Offset(0.r, -4.r),
                   ),
                 ],
               ),
@@ -748,33 +748,33 @@ class _CartTab extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: Text(
                             'Subtotal',
                             style: TextStyle(
                               color: AppColors.muted,
-                              fontSize: 12,
+                              fontSize: 12.sp,
                             ),
                           ),
                         ),
                         Text(
                           '${_price(state.cartTotal)} EGP',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.ink,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: Text(
                             'Total',
                             style: TextStyle(
                               color: AppColors.ink,
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -782,31 +782,31 @@ class _CartTab extends StatelessWidget {
                         Text(
                           '${_price(state.cartTotal)} EGP',
                           textDirection: TextDirection.ltr,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.primary,
-                            fontSize: 19,
+                            fontSize: 19.sp,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          padding: EdgeInsets.symmetric(vertical: 15.r),
                         ),
                         onPressed: state.busy
                             ? null
                             : () => _startCheckout(context),
                         child: state.busy
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
+                            ? SizedBox(
+                                width: 20.w,
+                                height: 20.h,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                                  strokeWidth: 2.r,
                                   color: AppColors.surface,
                                 ),
                               )
@@ -851,22 +851,22 @@ class _CartItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final store = context.read<StoreCubit>();
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(19),
+        borderRadius: BorderRadius.circular(19.r),
       ),
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(13),
+            borderRadius: BorderRadius.circular(13.r),
             child: SizedBox(
-              width: 76,
-              height: 76,
+              width: 76.w,
+              height: 76.h,
               child: _ProductImage(url: item.product.image),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -880,7 +880,7 @@ class _CartItemCard extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6.h),
                 Text(
                   _price(item.subtotal),
                   textDirection: TextDirection.ltr,
@@ -889,10 +889,10 @@ class _CartItemCard extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Text(
                   'Qty: ${item.quantity}',
-                  style: const TextStyle(color: AppColors.muted, fontSize: 12),
+                  style: TextStyle(color: AppColors.muted, fontSize: 12.sp),
                 ),
               ],
             ),
@@ -933,9 +933,9 @@ class _OrdersTab extends StatelessWidget {
         return RefreshIndicator(
           onRefresh: context.read<StoreCubit>().loadOrders,
           child: ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.r),
             itemCount: state.orders.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => SizedBox(height: 12.h),
             itemBuilder: (context, index) => _OrderCard(
               order: state.orders[index],
               onTap: () => _showOrderDetails(context, state.orders[index]),
@@ -963,21 +963,21 @@ class _OrdersTab extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: const Text('Order Details'),
         content: SizedBox(
-          width: 360,
+          width: 360.w,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text('Order: ${details.code}'),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Text('Status: ${_statusLabel(details.status)}'),
               Text('Payment: ${_paymentLabel(details.paymentMethod)}'),
               if (details.address.isNotEmpty)
                 Text('Address: ${details.address}'),
-              const Divider(height: 24),
+              Divider(height: 24.h),
               ...details.items.map(
                 (item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
+                  padding: EdgeInsets.only(bottom: 8.r),
                   child: Row(
                     children: [
                       Expanded(
@@ -992,7 +992,7 @@ class _OrdersTab extends StatelessWidget {
                   ),
                 ),
               ),
-              const Divider(height: 24),
+              Divider(height: 24.h),
               Text(
                 'Total: ${_price(details.totalPrice)} EGP',
                 style: const TextStyle(fontWeight: FontWeight.w800),
@@ -1002,7 +1002,7 @@ class _OrdersTab extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: context.pop,
             child: const Text('Close'),
           ),
         ],
@@ -1026,27 +1026,27 @@ class _OrderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: AppColors.surface,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(20.r),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.r),
           child: Row(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 48.w,
+                height: 48.h,
                 decoration: BoxDecoration(
                   color: AppColors.primaryContainer,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(15.r),
                 ),
                 child: const Icon(
                   Icons.receipt_long_rounded,
                   color: AppColors.primary,
                 ),
               ),
-              const SizedBox(width: 13),
+              SizedBox(width: 13.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1058,28 +1058,28 @@ class _OrderCard extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: 5.h),
                     Row(
                       children: [
                         _OrderStatusBadge(status: order.status),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                         Flexible(
                           child: Text(
                             '${order.items.length} items',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.muted,
-                              fontSize: 13,
+                              fontSize: 13.sp,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       _paymentLabel(order.paymentMethod),
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.muted,
-                        fontSize: 12,
+                        fontSize: 12.sp,
                       ),
                     ),
                   ],
@@ -1117,16 +1117,16 @@ class _OrderStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = _statusStyle(status);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10.r, vertical: 5.r),
       decoration: BoxDecoration(
         color: style.background,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
       ),
       child: Text(
         style.label,
         style: TextStyle(
           color: style.foreground,
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -1149,29 +1149,29 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(28),
+        padding: EdgeInsets.all(28.r),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 84,
-              height: 84,
+              width: 84.w,
+              height: 84.h,
               decoration: BoxDecoration(
                 color: AppColors.primaryContainer,
-                borderRadius: BorderRadius.circular(28),
+                borderRadius: BorderRadius.circular(28.r),
               ),
-              child: Icon(icon, color: AppColors.primary, size: 38),
+              child: Icon(icon, color: AppColors.primary, size: 38.r),
             ),
-            const SizedBox(height: 18),
+            SizedBox(height: 18.h),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.ink,
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               subtitle,
               textAlign: TextAlign.center,

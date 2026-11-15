@@ -1,4 +1,4 @@
-import 'package:clean_arch_session/core/widgets/location_picker.dart';
+import 'package:e_commerce_customer/core/widgets/location_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 

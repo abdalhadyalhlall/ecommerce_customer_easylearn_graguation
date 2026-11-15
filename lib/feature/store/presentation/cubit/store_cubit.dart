@@ -1,11 +1,11 @@
-import 'package:clean_arch_session/core/cache/cart_cache.dart';
-import 'package:clean_arch_session/core/networking/api_error_handler.dart';
-import 'package:clean_arch_session/feature/store/domain/entities/store_entities.dart';
-import 'package:clean_arch_session/feature/store/domain/usecases/cart_usecases.dart';
-import 'package:clean_arch_session/feature/store/domain/usecases/catalog_usecases.dart';
-import 'package:clean_arch_session/feature/store/domain/usecases/favorite_usecases.dart';
-import 'package:clean_arch_session/feature/store/domain/usecases/order_usecases.dart';
-import 'package:clean_arch_session/feature/store/presentation/cubit/store_state.dart';
+import 'package:e_commerce_customer/core/cache/cart_cache.dart';
+import 'package:e_commerce_customer/core/networking/api_error_handler.dart';
+import 'package:e_commerce_customer/feature/store/domain/entities/store_entities.dart';
+import 'package:e_commerce_customer/feature/store/domain/usecases/cart_usecases.dart';
+import 'package:e_commerce_customer/feature/store/domain/usecases/catalog_usecases.dart';
+import 'package:e_commerce_customer/feature/store/domain/usecases/favorite_usecases.dart';
+import 'package:e_commerce_customer/feature/store/domain/usecases/order_usecases.dart';
+import 'package:e_commerce_customer/feature/store/presentation/cubit/store_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StoreCubit extends Cubit<StoreState> {

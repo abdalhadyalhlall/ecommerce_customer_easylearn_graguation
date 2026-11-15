@@ -1,14 +1,16 @@
-import 'package:clean_arch_session/core/routes/routes.dart';
-import 'package:clean_arch_session/core/theme/app_colors.dart';
-import 'package:clean_arch_session/feature/auth/presentation/cubit/auth_cubit.dart';
-import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_cubit.dart';
-import 'package:clean_arch_session/feature/profile/presentation/ui/screen/profile_screen.dart';
-import 'package:clean_arch_session/feature/store/domain/entities/store_entities.dart';
-import 'package:clean_arch_session/feature/store/presentation/cubit/store_cubit.dart';
-import 'package:clean_arch_session/feature/store/presentation/cubit/store_state.dart';
-import 'package:clean_arch_session/feature/store/presentation/ui/screen/product_details_screen.dart';
-import 'package:clean_arch_session/feature/store/presentation/ui/screen/checkout_screen.dart';
+import 'package:e_commerce_customer/core/routes/routes.dart';
+import 'package:e_commerce_customer/core/theme/app_colors.dart';
+import 'package:e_commerce_customer/core/helpers/context_extensions.dart';
+import 'package:e_commerce_customer/feature/auth/presentation/cubit/auth_cubit.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/cubit/profile_cubit.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/ui/screen/profile_screen.dart';
+import 'package:e_commerce_customer/feature/store/domain/entities/store_entities.dart';
+import 'package:e_commerce_customer/feature/store/presentation/cubit/store_cubit.dart';
+import 'package:e_commerce_customer/feature/store/presentation/cubit/store_state.dart';
+import 'package:e_commerce_customer/feature/store/presentation/ui/screen/product_details_screen.dart';
+import 'package:e_commerce_customer/feature/store/presentation/ui/screen/checkout_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part '../widget/store_widgets.dart';
@@ -50,29 +52,19 @@ class _StoreScreenState extends State<StoreScreen> {
           listener: (context, state) {
             final text = state.error ?? state.message;
             if (text == null) return;
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text(text),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
+            context.showSnackBar(text, isError: state.error != null);
             context.read<StoreCubit>().clearFeedback();
           },
         ),
         BlocListener<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthLoggedOut) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
+              context.pushNamedAndRemoveUntil(
                 Routes.login,
-                (route) => false,
+                predicate: (route) => false,
               );
               if (state.message.isNotEmpty) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message)));
+                context.showSnackBar(state.message);
               }
             }
           },

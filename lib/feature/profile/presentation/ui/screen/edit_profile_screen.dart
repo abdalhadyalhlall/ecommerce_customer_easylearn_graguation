@@ -1,12 +1,14 @@
 import 'dart:typed_data';
 
-import 'package:clean_arch_session/core/helpers/image_picker_helper.dart';
-import 'package:clean_arch_session/core/helpers/location_picker_helper.dart';
-import 'package:clean_arch_session/core/theme/app_colors.dart';
-import 'package:clean_arch_session/core/widgets/app_button.dart';
-import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_cubit.dart';
-import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_state.dart';
-import 'package:clean_arch_session/feature/profile/presentation/ui/widget/profile_widgets.dart';
+import 'package:e_commerce_customer/core/helpers/image_picker_helper.dart';
+import 'package:e_commerce_customer/core/helpers/location_picker_helper.dart';
+import 'package:e_commerce_customer/core/helpers/context_extensions.dart';
+import 'package:e_commerce_customer/core/theme/app_colors.dart';
+import 'package:e_commerce_customer/core/widgets/app_button.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/cubit/profile_cubit.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/cubit/profile_state.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/ui/widget/profile_widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
@@ -65,13 +67,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       });
     } on PickImageFailure catch (failure) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(failure.message)),
-      );
+      context.showSnackBar(failure.message, isError: true);
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not read the selected picture: $error')),
+      context.showSnackBar(
+        'Could not read the selected picture: $error',
+        isError: true,
       );
     }
   }
@@ -125,12 +126,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.surface,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: context.pop,
           icon: const Icon(Icons.arrow_back_rounded),
         ),
-        title: const Text(
+        title: Text(
           'Edit Profile',
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700),
         ),
       ),
       body: SafeArea(
@@ -138,52 +139,52 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           builder: (context, state) {
             return Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 520),
+                constraints: BoxConstraints(maxWidth: 520.w),
                 child: Form(
                   key: _formKey,
                   child: ListView(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 22),
+                    padding: EdgeInsets.fromLTRB(20.r, 12.r, 20.r, 22.r),
                     children: [
                       Center(
                         child: InkWell(
                           onTap: state.saving ? null : _pickPicture,
-                          borderRadius: BorderRadius.circular(40),
+                          borderRadius: BorderRadius.circular(40.r),
                           child: ProfileAvatar(
                             imageUrl: _pictureBytes == null
                                 ? profile?.pictureUrl
                                 : null,
                             imageBytes: _pictureBytes,
                             name: _nameController.text,
-                            radius: 27,
+                            radius: 27.r,
                             badge: Container(
-                              width: 19,
-                              height: 19,
+                              width: 19.w,
+                              height: 19.h,
                               decoration: const BoxDecoration(
                                 color: AppColors.primary,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.camera_alt_rounded,
                                 color: AppColors.surface,
-                                size: 11,
+                                size: 11.r,
                               ),
                             ),
                           ),
                         ),
                       ),
                       if (_pictureBytes != null) ...[
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                         Center(
                           child: Text(
                             _pictureFileName ?? '',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.muted,
-                              fontSize: 10,
+                              fontSize: 10.sp,
                             ),
                           ),
                         ),
                       ],
-                      const SizedBox(height: 18),
+                      SizedBox(height: 18.h),
                       ProfileTextField(
                         controller: _nameController,
                         label: 'Full Name',
@@ -191,14 +192,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ? 'Enter your name'
                             : null,
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       ProfileTextField(
                         controller: _emailController,
                         label: 'Email',
                         keyboardType: TextInputType.emailAddress,
                         validator: _validateEmail,
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       ProfileTextField(
                         controller: _phoneController,
                         label: 'Phone',
@@ -207,16 +208,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ? 'Enter your phone number'
                             : null,
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       ProfileTextField(
                         controller: _addressController,
                         label: 'Address',
                         keyboardType: TextInputType.streetAddress,
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10.h),
                       OutlinedButton.icon(
                         onPressed: state.saving ? null : _editLocation,
-                        icon: const Icon(Icons.location_on_outlined, size: 17),
+                        icon: Icon(Icons.location_on_outlined, size: 17.r),
                         label: Text(
                           _locationLabel,
                           maxLines: 1,
@@ -228,23 +229,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           side: const BorderSide(
                             color: AppColors.primaryBorder,
                           ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 13,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.r,
+                            vertical: 13.r,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(11),
+                            borderRadius: BorderRadius.circular(11.r),
                           ),
                         ),
                       ),
                       if (state.error != null || state.message != null) ...[
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                         ProfileFeedback(
                           text: state.error ?? state.message!,
                           isError: state.error != null,
                         ),
                       ],
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       AppButton(
                         text: 'Save Changes',
                         onPressed: _save,

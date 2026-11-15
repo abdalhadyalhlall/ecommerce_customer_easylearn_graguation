@@ -1,11 +1,11 @@
-import 'package:clean_arch_session/core/cache/cache_const.dart';
-import 'package:clean_arch_session/core/cache/cart_cache.dart';
-import 'package:clean_arch_session/core/cache/profile_cache.dart';
-import 'package:clean_arch_session/core/cache/cache_helper.dart';
-import 'package:clean_arch_session/core/networking/api_constants.dart';
-import 'package:clean_arch_session/core/networking/api_service.dart';
-import 'package:clean_arch_session/feature/auth/domain/entities/register_entity.dart';
-import 'package:clean_arch_session/feature/auth/domain/repositories/auth_repo.dart';
+import 'package:e_commerce_customer/core/cache/cache_const.dart';
+import 'package:e_commerce_customer/core/cache/cart_cache.dart';
+import 'package:e_commerce_customer/core/cache/profile_cache.dart';
+import 'package:e_commerce_customer/core/cache/cache_helper.dart';
+import 'package:e_commerce_customer/core/networking/api_constants.dart';
+import 'package:e_commerce_customer/core/networking/api_service.dart';
+import 'package:e_commerce_customer/feature/auth/domain/entities/register_entity.dart';
+import 'package:e_commerce_customer/feature/auth/domain/repositories/auth_repo.dart';
 import 'package:dio/dio.dart';
 
 class AuthRepoImpl implements AuthRepo {

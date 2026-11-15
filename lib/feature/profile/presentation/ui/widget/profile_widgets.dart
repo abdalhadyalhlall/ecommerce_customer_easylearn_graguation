@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:clean_arch_session/core/theme/app_colors.dart';
+import 'package:e_commerce_customer/core/theme/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 
 class ProfileAvatar extends StatelessWidget {
@@ -39,7 +40,7 @@ class ProfileAvatar extends StatelessWidget {
                 ),
         ),
         if (badge != null)
-          PositionedDirectional(bottom: -2, end: -2, child: badge!),
+          PositionedDirectional(bottom: -2.r, end: -2.r, child: badge!),
       ],
     );
   }
@@ -86,23 +87,23 @@ class ProfileMenuTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
-      leading: Icon(icon, color: AppColors.primary, size: 21),
+      leading: Icon(icon, color: AppColors.primary, size: 21.r),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           color: AppColors.ink,
-          fontSize: 14,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w500,
         ),
       ),
-      trailing: const Icon(
+      trailing: Icon(
         Icons.chevron_right_rounded,
         color: AppColors.muted,
-        size: 20,
+        size: 20.r,
       ),
-      minLeadingWidth: 18,
-      minTileHeight: 54,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+      minLeadingWidth: 18.w,
+      minTileHeight: 54.h,
+      contentPadding: EdgeInsets.symmetric(horizontal: 14.r),
     );
   }
 }
@@ -130,13 +131,13 @@ class ProfileTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.ink,
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 7),
+        SizedBox(height: 7.h),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
@@ -145,20 +146,20 @@ class ProfileTextField extends StatelessWidget {
           decoration: InputDecoration(
             filled: true,
             fillColor: AppColors.surface,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 13,
-              vertical: 13,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 13.r,
+              vertical: 13.r,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: AppColors.primary),
             ),
           ),
@@ -182,22 +183,25 @@ class ProfileFeedback extends StatelessWidget {
         : AppColors.success.withValues(alpha: 0.08);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 12.r, vertical: 10.r),
       decoration: BoxDecoration(
         color: background,
         border: Border.all(color: color.withValues(alpha: 0.3)),
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(11.r),
       ),
       child: Row(
         children: [
           Icon(
             isError ? Icons.error_outline_rounded : Icons.check_circle_outline,
             color: color,
-            size: 16,
+            size: 16.r,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Expanded(
-            child: Text(text, style: TextStyle(color: color, fontSize: 11)),
+            child: Text(
+              text,
+              style: TextStyle(color: color, fontSize: 11.sp),
+            ),
           ),
         ],
       ),

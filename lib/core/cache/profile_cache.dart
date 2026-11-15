@@ -1,5 +1,5 @@
-import 'package:clean_arch_session/core/cache/cache_const.dart';
-import 'package:clean_arch_session/core/cache/cache_helper.dart';
+import 'package:e_commerce_customer/core/cache/cache_const.dart';
+import 'package:e_commerce_customer/core/cache/cache_helper.dart';
 
 class ProfileCache {
   static Future<void> save(String encodedProfile) {

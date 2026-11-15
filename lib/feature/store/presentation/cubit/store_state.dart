@@ -1,4 +1,4 @@
-import 'package:clean_arch_session/feature/store/domain/entities/store_entities.dart';
+import 'package:e_commerce_customer/feature/store/domain/entities/store_entities.dart';
 
 class StoreState {
   final List<StoreCategory> categories;

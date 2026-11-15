@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:clean_arch_session/core/cache/profile_cache.dart';
-import 'package:clean_arch_session/core/networking/api_constants.dart';
-import 'package:clean_arch_session/core/networking/api_service.dart';
-import 'package:clean_arch_session/feature/profile/domain/entities/client_profile.dart';
-import 'package:clean_arch_session/feature/profile/domain/repositories/profile_repository.dart';
+import 'package:e_commerce_customer/core/cache/profile_cache.dart';
+import 'package:e_commerce_customer/core/networking/api_constants.dart';
+import 'package:e_commerce_customer/core/networking/api_service.dart';
+import 'package:e_commerce_customer/feature/profile/domain/entities/client_profile.dart';
+import 'package:e_commerce_customer/feature/profile/domain/repositories/profile_repository.dart';
 import 'package:dio/dio.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {

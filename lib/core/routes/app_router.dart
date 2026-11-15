@@ -1,13 +1,13 @@
-import 'package:clean_arch_session/core/di/dependency_injection.dart';
-import 'package:clean_arch_session/core/routes/routes.dart';
-import 'package:clean_arch_session/feature/auth/presentation/cubit/auth_cubit.dart';
-import 'package:clean_arch_session/feature/auth/presentation/ui/login_screen.dart';
-import 'package:clean_arch_session/feature/auth/presentation/ui/otp_screen.dart';
-import 'package:clean_arch_session/feature/auth/presentation/ui/register_screen.dart';
-import 'package:clean_arch_session/feature/auth/presentation/ui/splash_screen.dart';
-import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_cubit.dart';
-import 'package:clean_arch_session/feature/store/presentation/cubit/store_cubit.dart';
-import 'package:clean_arch_session/feature/store/presentation/ui/screen/store_screen.dart';
+import 'package:e_commerce_customer/core/di/dependency_injection.dart';
+import 'package:e_commerce_customer/core/routes/routes.dart';
+import 'package:e_commerce_customer/feature/auth/presentation/cubit/auth_cubit.dart';
+import 'package:e_commerce_customer/feature/auth/presentation/ui/login_screen.dart';
+import 'package:e_commerce_customer/feature/auth/presentation/ui/otp_screen.dart';
+import 'package:e_commerce_customer/feature/auth/presentation/ui/register_screen.dart';
+import 'package:e_commerce_customer/feature/auth/presentation/ui/splash_screen.dart';
+import 'package:e_commerce_customer/feature/profile/presentation/cubit/profile_cubit.dart';
+import 'package:e_commerce_customer/feature/store/presentation/cubit/store_cubit.dart';
+import 'package:e_commerce_customer/feature/store/presentation/ui/screen/store_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

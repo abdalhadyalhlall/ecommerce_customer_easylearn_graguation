@@ -1,9 +1,11 @@
 import 'dart:async';
 
-import 'package:clean_arch_session/core/routes/routes.dart';
-import 'package:clean_arch_session/core/theme/app_colors.dart';
-import 'package:clean_arch_session/feature/auth/presentation/cubit/auth_cubit.dart';
-import 'package:clean_arch_session/core/widgets/app_button.dart';
+import 'package:e_commerce_customer/core/helpers/context_extensions.dart';
+import 'package:e_commerce_customer/core/routes/routes.dart';
+import 'package:e_commerce_customer/core/theme/app_colors.dart';
+import 'package:e_commerce_customer/feature/auth/presentation/cubit/auth_cubit.dart';
+import 'package:e_commerce_customer/core/widgets/app_button.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -79,8 +81,9 @@ class _OtpScreenState extends State<OtpScreen> {
   void _verify() {
     if (_verificationInProgress) return;
     if (_otpCode.length != _otpLength) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter the 6-digit verification code')),
+      context.showSnackBar(
+        'Enter the 6-digit verification code',
+        isError: true,
       );
       return;
     }
@@ -106,75 +109,72 @@ class _OtpScreenState extends State<OtpScreen> {
           backgroundColor: AppColors.canvas,
           leading: IconButton(
             tooltip: 'Back',
-            icon: const Icon(Icons.arrow_back_rounded, size: 20),
-            onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.arrow_back_rounded, size: 20.r),
+            onPressed: context.pop,
           ),
-          title: const Text(
+          title: Text(
             'Verify OTP',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700),
           ),
         ),
         body: SafeArea(
           child: BlocConsumer<AuthCubit, AuthState>(
             listener: (context, state) {
               if (state is AuthAuthenticated) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
+                context.pushNamedAndRemoveUntil(
                   Routes.welcome,
-                  (route) => false,
+                  predicate: (route) => false,
                 );
               } else if (state is AuthOtpResent) {
                 _showResendMessage();
               } else if (state is AuthFailure) {
                 _verificationInProgress = false;
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message)));
+                context.showSnackBar(state.message, isError: true);
               }
             },
             builder: (context, state) {
               return Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
+                  padding: EdgeInsets.all(24.r),
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 430),
+                    constraints: BoxConstraints(maxWidth: 430.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Center(
                           child: Container(
-                            width: 58,
-                            height: 58,
+                            width: 58.w,
+                            height: 58.h,
                             decoration: const BoxDecoration(
                               color: AppColors.primaryContainer,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.notifications_none_rounded,
                               color: AppColors.primary,
-                              size: 27,
+                              size: 27.r,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 27),
+                        SizedBox(height: 27.h),
                         Text(
                           'Code sent to ${widget.email}',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.muted,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                           ),
                         ),
-                        const SizedBox(height: 18),
+                        SizedBox(height: 18.h),
                         Row(
                           children: List.generate(_otpLength, (index) {
                             return Expanded(
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                  right: index == _otpLength - 1 ? 0 : 7,
+                                  right: index == _otpLength - 1.r ? 0.r : 7.r,
                                 ),
                                 child: SizedBox(
-                                  height: 48,
+                                  height: 48.h,
                                   child: TextField(
                                     controller: _controllers[index],
                                     focusNode: _focusNodes[index],
@@ -184,9 +184,9 @@ class _OtpScreenState extends State<OtpScreen> {
                                     inputFormatters: [
                                       FilteringTextInputFormatter.digitsOnly,
                                     ],
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: AppColors.primary,
-                                      fontSize: 18,
+                                      fontSize: 18.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
                                     decoration: InputDecoration(
@@ -195,22 +195,22 @@ class _OtpScreenState extends State<OtpScreen> {
                                       filled: true,
                                       fillColor: AppColors.surface,
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(9),
+                                        borderRadius: BorderRadius.circular(9.r),
                                         borderSide: const BorderSide(
                                           color: AppColors.border,
                                         ),
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(9),
+                                        borderRadius: BorderRadius.circular(9.r),
                                         borderSide: const BorderSide(
                                           color: AppColors.border,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(9),
-                                        borderSide: const BorderSide(
+                                        borderRadius: BorderRadius.circular(9.r),
+                                        borderSide: BorderSide(
                                           color: AppColors.primary,
-                                          width: 1.4,
+                                          width: 1.4.w,
                                         ),
                                       ),
                                     ),
@@ -224,36 +224,36 @@ class _OtpScreenState extends State<OtpScreen> {
                           }),
                         ),
                         if (_resendMessage != null) ...[
-                          const SizedBox(height: 15),
+                          SizedBox(height: 15.h),
                           Text(
                             _resendMessage!,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.success,
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
-                        const SizedBox(height: 22),
+                        SizedBox(height: 22.h),
                         AppButton(
                           text: 'Verify OTP',
                           backgroundColor: AppColors.primary,
                           isLoading: state is AuthLoading,
                           onPressed: _verify,
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                         TextButton(
                           onPressed: state is AuthLoading
                               ? null
                               : () => context.read<AuthCubit>().resendOtp(
                                   email: widget.email,
                                 ),
-                          child: const Text(
+                          child: Text(
                             'Resend OTP',
                             style: TextStyle(
                               color: AppColors.primary,
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -287,10 +287,9 @@ class _VerificationSuccessScreenState extends State<VerificationSuccessScreen> {
     super.initState();
     _navigationTimer = Timer(const Duration(milliseconds: 1800), () {
       if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
+        context.pushNamedAndRemoveUntil(
           Routes.store,
-          (route) => false,
+          predicate: (route) => false,
         );
       }
     });
@@ -311,36 +310,36 @@ class _VerificationSuccessScreenState extends State<VerificationSuccessScreen> {
         body: SafeArea(
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.all(28),
+              padding: EdgeInsets.all(28.r),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 64,
-                    height: 64,
+                    width: 64.w,
+                    height: 64.h,
                     decoration: const BoxDecoration(
                       color: AppColors.successContainer,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.check_circle_outline_rounded,
                       color: AppColors.success,
-                      size: 34,
+                      size: 34.r,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: 16.h),
+                  Text(
                     'Verified!',
                     style: TextStyle(
                       color: AppColors.ink,
-                      fontSize: 20,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  const Text(
+                  SizedBox(height: 6.h),
+                  Text(
                     'Welcome to Easy Shop',
-                    style: TextStyle(color: AppColors.muted, fontSize: 12),
+                    style: TextStyle(color: AppColors.muted, fontSize: 12.sp),
                   ),
                 ],
               ),

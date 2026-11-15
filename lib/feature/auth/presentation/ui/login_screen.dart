@@ -1,7 +1,11 @@
-import 'package:clean_arch_session/core/routes/routes.dart';
-import 'package:clean_arch_session/core/theme/app_colors.dart';
-import 'package:clean_arch_session/feature/auth/presentation/cubit/auth_cubit.dart';
-import 'package:clean_arch_session/core/widgets/app_button.dart';
+import 'package:e_commerce_customer/core/helpers/app_helpers.dart';
+import 'package:e_commerce_customer/core/assets/app_assets.dart';
+import 'package:e_commerce_customer/core/helpers/context_extensions.dart';
+import 'package:e_commerce_customer/core/routes/routes.dart';
+import 'package:e_commerce_customer/core/theme/app_colors.dart';
+import 'package:e_commerce_customer/feature/auth/presentation/cubit/auth_cubit.dart';
+import 'package:e_commerce_customer/core/widgets/app_button.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _openOtp(String email) {
-    Navigator.pushNamed(context, Routes.otp, arguments: email);
+    context.pushNamed(Routes.otp, arguments: email);
   }
 
   @override
@@ -49,43 +53,41 @@ class _LoginScreenState extends State<LoginScreen> {
               if (state is AuthOtpRequired) {
                 _openOtp(state.email);
               } else if (state is AuthFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
-                );
+                context.showSnackBar(state.message, isError: true);
               }
             },
             builder: (context, state) {
               return Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: EdgeInsets.symmetric(horizontal: 24.r),
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 430),
+                    constraints: BoxConstraints(maxWidth: 430.w),
                     child: Form(
                       key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Center(child: _ShopMark(size: 132)),
-                          const SizedBox(height: 20),
-                          const Text(
+                          Center(child: _ShopMark(size: 132.r)),
+                          verticalSpace(20),
+                          Text(
                             'Welcome back',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: AppColors.ink,
-                              fontSize: 22,
+                              fontSize: 22.sp,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          const Text(
+                          verticalSpace(5),
+                          Text(
                             'Sign in to continue shopping',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: AppColors.muted,
-                              fontSize: 13,
+                              fontSize: 13.sp,
                             ),
                           ),
-                          const SizedBox(height: 28),
+                          verticalSpace(28),
                           _AuthField(
                             controller: _emailController,
                             label: 'Email',
@@ -100,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 14),
+                          verticalSpace(14),
                           _AuthField(
                             controller: _passwordController,
                             label: 'Password',
@@ -116,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _obscurePassword
                                     ? Icons.visibility_outlined
                                     : Icons.visibility_off_outlined,
-                                size: 19,
+                                size: 19.r,
                                 color: AppColors.muted,
                               ),
                             ),
@@ -125,25 +127,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                 : null,
                             onSubmitted: (_) => _login(),
                           ),
-                          const SizedBox(height: 23),
+                          verticalSpace(23),
                           AppButton(
                             text: 'Login',
                             isLoading: state is AuthLoading,
                             backgroundColor: AppColors.primary,
                             onPressed: _login,
                           ),
-                          const SizedBox(height: 10),
+                          verticalSpace(10),
                           TextButton(
                             onPressed: state is AuthLoading
                                 ? null
-                                : () => Navigator.pushNamed(
-                                    context,
-                                    Routes.register,
-                                  ),
-                            child: const Text.rich(
+                                : () => context.pushNamed(Routes.register),
+                            child: Text.rich(
                               TextSpan(
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   color: AppColors.muted,
                                 ),
                                 children: [
@@ -186,24 +185,24 @@ class _ShopMark extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
           BoxShadow(
             color: AppColors.strongShadow,
-            blurRadius: 16,
-            offset: Offset(0, 5),
+            blurRadius: 16.r,
+            offset: Offset(0.r, 5.r),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8.r),
         child: Image.asset(
-          'assets/icon/easy_shop_logo.png',
+          AppAssets.easyShopLogo,
           fit: BoxFit.cover,
-          errorBuilder: (_, _, _) => const Icon(
+          errorBuilder: (_, _, _) => Icon(
             Icons.shopping_bag_rounded,
             color: AppColors.primary,
-            size: 42,
+            size: 42.r,
           ),
         ),
       ),
@@ -237,13 +236,13 @@ class _AuthField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.ink,
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 7),
+        SizedBox(height: 7.h),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
@@ -254,24 +253,24 @@ class _AuthField extends StatelessWidget {
           onFieldSubmitted: onSubmitted,
           decoration: InputDecoration(
             hintText: label == 'Email' ? 'you@example.com' : '••••••••',
-            hintStyle: const TextStyle(color: AppColors.muted, fontSize: 13),
+            hintStyle: TextStyle(color: AppColors.muted, fontSize: 13.sp),
             suffixIcon: suffix,
             filled: true,
             fillColor: const Color(0xFFF9FAFB),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 13,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 14.r,
+              vertical: 13.r,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: AppColors.primary),
             ),
           ),

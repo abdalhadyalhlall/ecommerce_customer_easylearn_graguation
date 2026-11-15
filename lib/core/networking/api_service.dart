@@ -1,6 +1,6 @@
-import 'package:clean_arch_session/core/cache/cache_const.dart';
-import 'package:clean_arch_session/core/cache/cache_helper.dart';
-import 'package:clean_arch_session/core/networking/api_constants.dart';
+import 'package:e_commerce_customer/core/cache/cache_const.dart';
+import 'package:e_commerce_customer/core/cache/cache_helper.dart';
+import 'package:e_commerce_customer/core/networking/api_constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';

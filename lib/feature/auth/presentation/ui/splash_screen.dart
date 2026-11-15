@@ -1,6 +1,8 @@
 import 'dart:async';
 
-import 'package:clean_arch_session/core/routes/routes.dart';
+import 'package:e_commerce_customer/core/assets/app_assets.dart';
+import 'package:e_commerce_customer/core/helpers/context_extensions.dart';
+import 'package:e_commerce_customer/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -18,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _navigationTimer = Timer(const Duration(milliseconds: 2200), () {
       if (mounted) {
-        Navigator.pushReplacementNamed(context, Routes.login);
+        context.pushReplacementNamed(Routes.login);
       }
     });
   }
@@ -35,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: const Color(0xFFFFFCF3),
       body: SizedBox.expand(
         child: Image.asset(
-          'assets/icon/easy_shop.jfif',
+          AppAssets.easyShop,
           fit: BoxFit.fill,
         ),
       ),

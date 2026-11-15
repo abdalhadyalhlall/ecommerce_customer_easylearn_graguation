@@ -1,5 +1,5 @@
-import 'package:clean_arch_session/feature/profile/domain/entities/client_profile.dart';
-import 'package:clean_arch_session/feature/profile/domain/repositories/profile_repository.dart';
+import 'package:e_commerce_customer/feature/profile/domain/entities/client_profile.dart';
+import 'package:e_commerce_customer/feature/profile/domain/repositories/profile_repository.dart';
 
 class GetProfileUseCase {
   final ProfileRepository _repository;

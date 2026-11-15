@@ -1,12 +1,14 @@
 import 'dart:typed_data';
 
-import 'package:clean_arch_session/core/helpers/image_picker_helper.dart';
-import 'package:clean_arch_session/core/helpers/location_picker_helper.dart';
-import 'package:clean_arch_session/core/routes/routes.dart';
-import 'package:clean_arch_session/core/theme/app_colors.dart';
-import 'package:clean_arch_session/feature/auth/domain/entities/register_entity.dart';
-import 'package:clean_arch_session/feature/auth/presentation/cubit/auth_cubit.dart';
-import 'package:clean_arch_session/core/widgets/app_button.dart';
+import 'package:e_commerce_customer/core/helpers/image_picker_helper.dart';
+import 'package:e_commerce_customer/core/helpers/location_picker_helper.dart';
+import 'package:e_commerce_customer/core/helpers/context_extensions.dart';
+import 'package:e_commerce_customer/core/routes/routes.dart';
+import 'package:e_commerce_customer/core/theme/app_colors.dart';
+import 'package:e_commerce_customer/feature/auth/domain/entities/register_entity.dart';
+import 'package:e_commerce_customer/feature/auth/presentation/cubit/auth_cubit.dart';
+import 'package:e_commerce_customer/core/widgets/app_button.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
@@ -58,13 +60,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     } on PickImageFailure catch (failure) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(failure.message)),
-      );
+      context.showSnackBar(failure.message, isError: true);
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not read the selected picture: $error')),
+      context.showSnackBar(
+        'Could not read the selected picture: $error',
+        isError: true,
       );
     }
   }
@@ -122,35 +123,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
           backgroundColor: AppColors.canvas,
           leading: IconButton(
             tooltip: 'Back',
-            icon: const Icon(Icons.arrow_back_rounded, size: 20),
-            onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.arrow_back_rounded, size: 20.r),
+            onPressed: context.pop,
           ),
-          title: const Text(
+          title: Text(
             'Create Account',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700),
           ),
         ),
         body: SafeArea(
           child: BlocConsumer<AuthCubit, AuthState>(
             listener: (context, state) {
-              if (state is AuthOtpRequired) {
-                Navigator.pushNamed(
-                  context,
-                  Routes.otp,
-                  arguments: state.email,
-                );
+              if (state is AuthRegistered) {
+                context.showSnackBar(state.message);
+                context.pushReplacementNamed(Routes.login);
+              } else if (state is AuthOtpRequired) {
+                context.pushNamed(Routes.otp, arguments: state.email);
               } else if (state is AuthFailure) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message)));
+                context.showSnackBar(state.message, isError: true);
               }
             },
             builder: (context, state) {
               return Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
+                  padding: EdgeInsets.fromLTRB(24.r, 4.r, 24.r, 24.r),
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 430),
+                    constraints: BoxConstraints(maxWidth: 430.w),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -159,10 +157,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           Center(
                             child: InkWell(
                               onTap: state is AuthLoading ? null : _pickPicture,
-                              borderRadius: BorderRadius.circular(40),
+                              borderRadius: BorderRadius.circular(40.r),
                               child: Container(
-                                width: 58,
-                                height: 58,
+                                width: 58.w,
+                                height: 58.h,
                                 clipBehavior: Clip.antiAlias,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
@@ -172,10 +170,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
                                 child: _pictureBytes == null
-                                    ? const Icon(
+                                    ? Icon(
                                         Icons.camera_alt_outlined,
                                         color: AppColors.primary,
-                                        size: 22,
+                                        size: 22.r,
                                       )
                                     : Image.memory(
                                         _pictureBytes!,
@@ -184,16 +182,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          const Text(
+                          SizedBox(height: 8.h),
+                          Text(
                             'Add a profile picture (optional)',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: AppColors.muted,
-                              fontSize: 11,
+                              fontSize: 11.sp,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           _RegisterField(
                             controller: _nameController,
                             label: 'Full Name *',
@@ -202,7 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ? 'Enter your full name'
                                 : null,
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12.h),
                           _RegisterField(
                             controller: _emailController,
                             label: 'Email *',
@@ -217,7 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12.h),
                           _RegisterField(
                             controller: _phoneController,
                             label: 'Phone *',
@@ -227,19 +225,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ? 'Enter your phone number'
                                 : null,
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12.h),
                           _RegisterField(
                             controller: _addressController,
                             label: 'Address (optional)',
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10.h),
                           OutlinedButton.icon(
                             onPressed: state is AuthLoading
                                 ? null
                                 : _pickLocation,
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.location_on_outlined,
-                              size: 17,
+                              size: 17.r,
                             ),
                             label: Text(
                               _locationLabel,
@@ -252,16 +250,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               side: const BorderSide(
                                 color: AppColors.primaryBorder,
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 13,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12.r,
+                                vertical: 13.r,
                               ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(11),
+                                borderRadius: BorderRadius.circular(11.r),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12.h),
                           _RegisterField(
                             controller: _passwordController,
                             label: 'Password *',
@@ -276,7 +274,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ? 'Password must be at least 6 characters'
                                 : null,
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12.h),
                           _RegisterField(
                             controller: _confirmationController,
                             label: 'Confirm Password *',
@@ -294,22 +292,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 : null,
                             onSubmitted: (_) => _register(),
                           ),
-                          const SizedBox(height: 18),
+                          SizedBox(height: 18.h),
                           AppButton(
                             text: 'Create Account',
                             isLoading: state is AuthLoading,
                             backgroundColor: AppColors.primary,
                             onPressed: _register,
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6.h),
                           TextButton(
                             onPressed: state is AuthLoading
                                 ? null
-                                : () => Navigator.pop(context),
-                            child: const Text.rich(
+                                : context.pop,
+                            child: Text.rich(
                               TextSpan(
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   color: AppColors.muted,
                                 ),
                                 children: [
@@ -344,7 +342,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       onPressed: onPressed,
       icon: Icon(
         obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-        size: 19,
+        size: 19.r,
         color: AppColors.muted,
       ),
     );
@@ -377,13 +375,13 @@ class _RegisterField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.ink,
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 7),
+        SizedBox(height: 7.h),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
@@ -403,20 +401,20 @@ class _RegisterField extends StatelessWidget {
             suffixIcon: suffix,
             filled: true,
             fillColor: const Color(0xFFF9FAFB),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 12,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 14.r,
+              vertical: 12.r,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: AppColors.primary),
             ),
           ),

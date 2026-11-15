@@ -1,5 +1,6 @@
-import 'package:clean_arch_session/core/theme/app_colors.dart';
-import 'package:clean_arch_session/feature/store/domain/entities/store_entities.dart';
+import 'package:e_commerce_customer/core/theme/app_colors.dart';
+import 'package:e_commerce_customer/feature/store/domain/entities/store_entities.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 
 class OrderSuccessScreen extends StatelessWidget {
@@ -16,83 +17,95 @@ class OrderSuccessScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF2FCF6),
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 76,
-                    height: 76,
-                    decoration: const BoxDecoration(
-                      color: AppColors.successContainer,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.check_circle_outline_rounded,
-                      color: AppColors.success,
-                      size: 42,
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 420.w),
+                  child: Padding(
+                    padding: EdgeInsets.all(24.r),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 76.w,
+                          height: 76.h,
+                          decoration: const BoxDecoration(
+                            color: AppColors.successContainer,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.check_circle_outline_rounded,
+                            color: AppColors.success,
+                            size: 42.r,
+                          ),
+                        ),
+                        SizedBox(height: 18.h),
+                        Text(
+                          paymentPending
+                              ? 'Complete Your Payment'
+                              : 'Order Placed Successfully!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.ink,
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        SizedBox(height: 7.h),
+                        Text(
+                          paymentPending
+                              ? 'The Paymob payment page was opened. Your order will remain pending until payment is confirmed.'
+                              : 'Your order has been placed successfully.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.muted,
+                            fontSize: 12.sp,
+                          ),
+                        ),
+                        SizedBox(height: 7.h),
+                        Text(
+                          '#${order.code}',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        SizedBox(height: 26.h),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 46.h,
+                          child: FilledButton.icon(
+                            onPressed: () => Navigator.pop(context, true),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                            ),
+                            icon: Icon(Icons.receipt_long_rounded, size: 17.r),
+                            label: const Text('View Orders'),
+                          ),
+                        ),
+                        SizedBox(height: 9.h),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 44.h,
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.primary,
+                              side: const BorderSide(
+                                color: AppColors.primaryBorder,
+                              ),
+                            ),
+                            child: const Text('Continue Shopping'),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 18),
-                  Text(
-                    paymentPending
-                        ? 'Complete Your Payment'
-                        : 'Order Placed Successfully!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.ink,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 7),
-                  Text(
-                    paymentPending
-                        ? 'The Paymob payment page was opened. Your order will remain pending until payment is confirmed.'
-                        : 'Your order has been placed successfully.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: AppColors.muted, fontSize: 12),
-                  ),
-                  const SizedBox(height: 7),
-                  Text(
-                    '#${order.code}',
-                    style: const TextStyle(
-                      color: AppColors.primary,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 26),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 46,
-                    child: FilledButton.icon(
-                      onPressed: () => Navigator.pop(context, true),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                      ),
-                      icon: const Icon(Icons.receipt_long_rounded, size: 17),
-                      label: const Text('View Orders'),
-                    ),
-                  ),
-                  const SizedBox(height: 9),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 44,
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.primary,
-                        side: const BorderSide(color: AppColors.primaryBorder),
-                      ),
-                      child: const Text('Continue Shopping'),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),

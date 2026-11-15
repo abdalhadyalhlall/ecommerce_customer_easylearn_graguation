@@ -1,4 +1,4 @@
-import 'package:clean_arch_session/feature/profile/domain/entities/client_profile.dart';
+import 'package:e_commerce_customer/feature/profile/domain/entities/client_profile.dart';
 
 class ProfileState {
   final ClientProfile? profile;

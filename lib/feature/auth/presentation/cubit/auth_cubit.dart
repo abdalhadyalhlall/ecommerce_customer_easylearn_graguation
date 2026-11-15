@@ -1,10 +1,10 @@
-import 'package:clean_arch_session/core/networking/api_error_handler.dart';
-import 'package:clean_arch_session/feature/auth/domain/entities/register_entity.dart';
-import 'package:clean_arch_session/feature/auth/domain/usecases/login_usecase.dart';
-import 'package:clean_arch_session/feature/auth/domain/usecases/logout_usecase.dart';
-import 'package:clean_arch_session/feature/auth/domain/usecases/register_usecase.dart';
-import 'package:clean_arch_session/feature/auth/domain/usecases/resend_otp_usecase.dart';
-import 'package:clean_arch_session/feature/auth/domain/usecases/verify_otp_usecase.dart';
+import 'package:e_commerce_customer/core/networking/api_error_handler.dart';
+import 'package:e_commerce_customer/feature/auth/domain/entities/register_entity.dart';
+import 'package:e_commerce_customer/feature/auth/domain/usecases/login_usecase.dart';
+import 'package:e_commerce_customer/feature/auth/domain/usecases/logout_usecase.dart';
+import 'package:e_commerce_customer/feature/auth/domain/usecases/register_usecase.dart';
+import 'package:e_commerce_customer/feature/auth/domain/usecases/resend_otp_usecase.dart';
+import 'package:e_commerce_customer/feature/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'auth_state.dart';
@@ -37,12 +37,8 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> register(RegisterEntity entity) async {
     emit(AuthLoading());
     try {
-      await _registerUseCase(entity);
-      final message = await _loginUseCase(
-        email: entity.email,
-        password: entity.password,
-      );
-      emit(AuthOtpRequired(email: entity.email, message: message));
+      final message = await _registerUseCase(entity);
+      emit(AuthRegistered(message));
     } catch (error) {
       emit(AuthFailure(ApiErrorHandler.getMessage(error)));
     }

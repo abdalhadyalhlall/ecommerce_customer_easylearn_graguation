@@ -1,4 +1,4 @@
-name: clean_arch_session
+name: e_commerce_customer
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -45,6 +45,7 @@ dependencies:
   latlong2: ^0.10.1
   geolocator: ^14.1.2
   geocoding: ^5.0.1
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:
@@ -81,8 +82,7 @@ flutter:
   uses-material-design: true
   assets:
     - .env
-    - assets/icon/easy_shop.jfif
-    - assets/icon/easy_shop_logo.png
+    - assets/icon/
   fonts:
     - family: EasyShopSans
       fonts:
