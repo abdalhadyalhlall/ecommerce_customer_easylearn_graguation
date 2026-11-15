@@ -11,18 +11,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'متجر',
+      title: 'Easy Shop',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       builder: (context, child) => Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection: TextDirection.ltr,
         child: child ?? const SizedBox.shrink(),
       ),
       initialRoute: initialRoute,
       onGenerateRoute: AppRouter().generateRoute,
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (_) => const Scaffold(
-          body: Center(child: Text('تعذر العثور على الصفحة')),
+          body: Center(child: Text('Page not found')),
         ),
       ),
     );

@@ -39,11 +39,7 @@ class ProfileAvatar extends StatelessWidget {
                 ),
         ),
         if (badge != null)
-          PositionedDirectional(
-            bottom: -2,
-            end: -2,
-            child: badge!,
-          ),
+          PositionedDirectional(bottom: -2, end: -2, child: badge!),
       ],
     );
   }
@@ -52,9 +48,13 @@ class ProfileAvatar extends StatelessWidget {
     final words = value.trim().split(RegExp(r'\s+'));
     if (words.isEmpty || words.first.isEmpty) return 'U';
     final first = words.first.runes.first;
-    if (words.length == 1) return String.fromCharCode(first).toUpperCase();
+    if (words.length == 1) {
+      final letters = words.first.runes.take(2).toList();
+      return String.fromCharCode(letters.first).toUpperCase() +
+          (letters.length > 1 ? String.fromCharCode(letters[1]) : '');
+    }
     return '${String.fromCharCode(first)}'
-        '${String.fromCharCode(words.last.runes.first)}'
+            '${String.fromCharCode(words.last.runes.first)}'
         .toUpperCase();
   }
 
@@ -86,12 +86,12 @@ class ProfileMenuTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
-      leading: Icon(icon, color: AppColors.primary, size: 19),
+      leading: Icon(icon, color: AppColors.primary, size: 21),
       title: Text(
         title,
         style: const TextStyle(
           color: AppColors.ink,
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -101,8 +101,8 @@ class ProfileMenuTile extends StatelessWidget {
         size: 20,
       ),
       minLeadingWidth: 18,
+      minTileHeight: 54,
       contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-      visualDensity: const VisualDensity(vertical: -1),
     );
   }
 }
@@ -197,10 +197,7 @@ class ProfileFeedback extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              text,
-              style: TextStyle(color: color, fontSize: 11),
-            ),
+            child: Text(text, style: TextStyle(color: color, fontSize: 11)),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:clean_arch_session/core/theme/app_colors.dart';
+import 'package:clean_arch_session/core/fonts/app_fonts.dart';
 import 'package:flutter/material.dart';
 
 abstract final class AppTheme {
@@ -22,6 +23,7 @@ abstract final class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
+      fontFamily: AppFonts.family,
       scaffoldBackgroundColor: AppColors.canvas,
       appBarTheme: const AppBarTheme(
         centerTitle: false,

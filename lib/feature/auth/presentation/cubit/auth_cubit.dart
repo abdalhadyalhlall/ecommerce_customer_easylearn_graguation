@@ -82,7 +82,7 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (error) {
       emit(
         AuthLoggedOut(
-          message: 'تم تسجيل الخروج محلياً. ${ApiErrorHandler.getMessage(error)}',
+          message: 'Signed out locally. ${ApiErrorHandler.getMessage(error)}',
         ),
       );
     }

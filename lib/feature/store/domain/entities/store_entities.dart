@@ -39,6 +39,7 @@ class StoreProduct {
   final String? categoryName;
   final String? categorySlug;
   final StorePublisher? publisher;
+  final bool visible;
 
   const StoreProduct({
     required this.id,
@@ -52,8 +53,10 @@ class StoreProduct {
     this.categoryName,
     this.categorySlug,
     this.publisher,
+    this.visible = true,
   });
 
+  bool get isVisible => visible;
   bool get isInStock => quantity > 0;
 }
 

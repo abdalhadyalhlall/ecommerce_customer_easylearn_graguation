@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Center(child: _ShopMark(size: 88)),
+                          Center(child: _ShopMark(size: 132)),
                           const SizedBox(height: 20),
                           const Text(
                             'Welcome back',
@@ -195,10 +195,17 @@ class _ShopMark extends StatelessWidget {
           ),
         ],
       ),
-      child: const Icon(
-        Icons.shopping_bag_rounded,
-        color: AppColors.primary,
-        size: 42,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Image.asset(
+          'assets/icon/easy_shop_logo.png',
+          fit: BoxFit.cover,
+          errorBuilder: (_, _, _) => const Icon(
+            Icons.shopping_bag_rounded,
+            color: AppColors.primary,
+            size: 42,
+          ),
+        ),
       ),
     );
   }
@@ -225,34 +232,51 @@ class _AuthField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.left,
-      validator: validator,
-      onFieldSubmitted: onSubmitted,
-      decoration: InputDecoration(
-        labelText: label,
-        suffixIcon: suffix,
-        labelStyle: const TextStyle(fontSize: 12, color: AppColors.muted),
-        filled: true,
-        fillColor: AppColors.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.ink,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
+        const SizedBox(height: 7),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          obscureText: obscureText,
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.left,
+          validator: validator,
+          onFieldSubmitted: onSubmitted,
+          decoration: InputDecoration(
+            hintText: label == 'Email' ? 'you@example.com' : '••••••••',
+            hintStyle: const TextStyle(color: AppColors.muted, fontSize: 13),
+            suffixIcon: suffix,
+            filled: true,
+            fillColor: const Color(0xFFF9FAFB),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 13,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.primary),
+            ),
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary),
-        ),
-      ),
+      ],
     );
   }
 }

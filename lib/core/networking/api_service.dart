@@ -2,6 +2,8 @@ import 'package:clean_arch_session/core/cache/cache_const.dart';
 import 'package:clean_arch_session/core/cache/cache_helper.dart';
 import 'package:clean_arch_session/core/networking/api_constants.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class ApiService {
   final Dio dio;
@@ -14,10 +16,23 @@ class ApiService {
       'Accept': 'application/json',
       'x-api-key': ApiConstants.apiKey,
     };
-    dio.interceptors.add(InterceptorsWrapper(onRequest: _addHeaders));
+    dio.interceptors.add(InterceptorsWrapper(onRequest: _addToken));
+    if (kDebugMode) {
+      dio.interceptors.add(
+        PrettyDioLogger(
+          requestHeader: true,
+          requestBody: true,
+          responseBody: true,
+          responseHeader: false,
+          error: true,
+          compact: false,
+          maxWidth: 90,
+        ),
+      );
+    }
   }
 
-  Future<void> _addHeaders(
+  Future<void> _addToken(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
@@ -28,7 +43,7 @@ class ApiService {
           key: CacheConstants.userToken,
         );
         if (token != null && token.isNotEmpty) {
-          options.headers['Authorization'] = 'Bearer $token';
+          options.headers['Authorization'] = ['Bearer', token].join(' ');
         }
       }
       handler.next(options);

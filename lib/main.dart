@@ -11,5 +11,5 @@ Future<void> main() async {
   await dotenv.load(fileName: '.env');
   setupGetIt();
   final token = await CacheHelper.getSecureData(key: CacheConstants.userToken);
-  runApp(MyApp(initialRoute: token == null ? Routes.login : Routes.store));
+  runApp(MyApp(initialRoute: token == null ? Routes.splash : Routes.store));
 }

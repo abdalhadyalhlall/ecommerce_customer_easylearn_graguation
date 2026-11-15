@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:clean_arch_session/core/helpers/image_picker_helper.dart';
+import 'package:clean_arch_session/core/helpers/location_picker_helper.dart';
 import 'package:clean_arch_session/core/routes/routes.dart';
 import 'package:clean_arch_session/core/theme/app_colors.dart';
 import 'package:clean_arch_session/feature/auth/domain/entities/register_entity.dart';
@@ -7,7 +9,7 @@ import 'package:clean_arch_session/feature/auth/presentation/cubit/auth_cubit.da
 import 'package:clean_arch_session/core/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -26,7 +28,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _longitudeController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmationController = TextEditingController();
-  final _picker = ImagePicker();
   String? _pictureFileName;
   Uint8List? _pictureBytes;
   bool _obscurePassword = true;
@@ -47,10 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _pickPicture() async {
     try {
-      final image = await _picker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 85,
-      );
+      final image = await ImagePickerHelper.showPicker(context);
       if (image == null) return;
       final bytes = await image.readAsBytes();
       if (!mounted) return;
@@ -58,10 +56,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _pictureFileName = image.name;
         _pictureBytes = bytes;
       });
+    } on PickImageFailure catch (failure) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.message)),
+      );
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not select picture: $error')),
+        SnackBar(content: Text('Could not read the selected picture: $error')),
       );
     }
   }
@@ -82,6 +85,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
         pictureFileName: _pictureFileName,
       ),
     );
+  }
+
+  Future<void> _pickLocation() async {
+    final latitude = double.tryParse(_latitudeController.text.trim());
+    final longitude = double.tryParse(_longitudeController.text.trim());
+    final location = await LocationPickerHelper.pickLocation(
+      context,
+      initialLocation: latitude == null || longitude == null
+          ? null
+          : LatLng(latitude, longitude),
+    );
+    if (location == null || !mounted) return;
+    setState(() {
+      _latitudeController.text = location.latitude.toStringAsFixed(6);
+      _longitudeController.text = location.longitude.toStringAsFixed(6);
+    });
+  }
+
+  String get _locationLabel {
+    final latitude = _latitudeController.text.trim();
+    final longitude = _longitudeController.text.trim();
+    if (latitude.isEmpty || longitude.isEmpty) {
+      return 'Location — tap to pick on map (optional)';
+    }
+    return 'Location — $latitude, $longitude';
   }
 
   @override
@@ -204,33 +232,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _addressController,
                             label: 'Address (optional)',
                           ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _RegisterField(
-                                  controller: _latitudeController,
-                                  label: 'Latitude (optional)',
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                        decimal: true,
-                                        signed: true,
-                                      ),
-                                ),
+                          const SizedBox(height: 10),
+                          OutlinedButton.icon(
+                            onPressed: state is AuthLoading
+                                ? null
+                                : _pickLocation,
+                            icon: const Icon(
+                              Icons.location_on_outlined,
+                              size: 17,
+                            ),
+                            label: Text(
+                              _locationLabel,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              alignment: Alignment.centerLeft,
+                              foregroundColor: AppColors.primary,
+                              side: const BorderSide(
+                                color: AppColors.primaryBorder,
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: _RegisterField(
-                                  controller: _longitudeController,
-                                  label: 'Longitude (optional)',
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                        decimal: true,
-                                        signed: true,
-                                      ),
-                                ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 13,
                               ),
-                            ],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(11),
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 12),
                           _RegisterField(
@@ -343,37 +372,56 @@ class _RegisterField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.left,
-      validator: validator,
-      onFieldSubmitted: onSubmitted,
-      decoration: InputDecoration(
-        labelText: label,
-        suffixIcon: suffix,
-        labelStyle: const TextStyle(fontSize: 12, color: AppColors.muted),
-        filled: true,
-        fillColor: AppColors.surface,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 12,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.ink,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
+        const SizedBox(height: 7),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          obscureText: obscureText,
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.left,
+          validator: validator,
+          onFieldSubmitted: onSubmitted,
+          decoration: InputDecoration(
+            hintText: switch (label) {
+              'Full Name *' => 'Ahmed Hassan',
+              'Email *' => 'ahmed@example.com',
+              'Phone *' => '+20 100 000 0000',
+              'Address (optional)' => 'Street, City (optional)',
+              _ => '••••••••',
+            },
+            suffixIcon: suffix,
+            filled: true,
+            fillColor: const Color(0xFFF9FAFB),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 12,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.primary),
+            ),
+          ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary),
-        ),
-      ),
+      ],
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:clean_arch_session/core/cache/cart_cache.dart';
 import 'package:clean_arch_session/core/networking/api_constants.dart';
 import 'package:clean_arch_session/core/networking/api_service.dart';
+import 'package:clean_arch_session/core/payments/paymob_constants.dart';
 import 'package:clean_arch_session/feature/store/domain/entities/store_entities.dart';
 import 'package:clean_arch_session/feature/store/domain/repositories/store_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,8 +24,8 @@ class StoreRepositoryImpl implements StoreRepository {
     final response = await _api.get(ApiConstants.products);
     final products = _asMapList(
       _data(response.data),
-    ).map(_productFromJson).toList();
-    if (categorySlug == null) return products;
+    ).map(_productFromJson).where((product) => product.isVisible);
+    if (categorySlug == null) return products.toList();
     return products
         .where((product) => product.categorySlug == categorySlug)
         .toList();
@@ -33,7 +34,11 @@ class StoreRepositoryImpl implements StoreRepository {
   @override
   Future<StoreProduct> getProductDetails(String slug) async {
     final response = await _api.get(ApiConstants.productDetails(slug));
-    return _productFromJson(_asMap(_data(response.data)));
+    final product = _productFromJson(_asMap(_data(response.data)));
+    if (!product.isVisible) {
+      throw StateError('This product is not available.');
+    }
+    return product;
   }
 
   @override
@@ -46,6 +51,7 @@ class StoreRepositoryImpl implements StoreRepository {
             product: _productFromJson(_asMap(json['product'])),
           ),
         )
+        .where((favorite) => favorite.product.isVisible)
         .toList();
   }
 
@@ -69,7 +75,10 @@ class StoreRepositoryImpl implements StoreRepository {
   Future<List<CartItem>> getCartItems() async {
     final response = await _api.get(ApiConstants.cart);
     final rawItems = _asMapList(_data(response.data));
-    final items = rawItems.map(_cartItemFromJson).toList();
+    final items = rawItems
+        .map(_cartItemFromJson)
+        .where((item) => item.product.isVisible)
+        .toList();
     await CartCache.save(jsonEncode(rawItems));
     return items;
   }
@@ -82,7 +91,9 @@ class StoreRepositoryImpl implements StoreRepository {
     if (decoded is! List) {
       throw const FormatException('Cached cart data is not a list.');
     }
-    return _asMapList(decoded).map(_cartItemFromJson).toList();
+    return _asMapList(
+      decoded,
+    ).map(_cartItemFromJson).where((item) => item.product.isVisible).toList();
   }
 
   @override
@@ -138,7 +149,11 @@ class StoreRepositoryImpl implements StoreRepository {
   @override
   Future<String> payOrder(String code) async {
     final paymentResponse = await _api.post(ApiConstants.orderPayment(code));
-    final paymentData = _asMap(_data(paymentResponse.data));
+    final paymentSetup = _data(paymentResponse.data);
+    final directUrl = PaymobConstants.findPaymentUrl(paymentSetup);
+    if (directUrl != null) return _launchPaymobUrl(directUrl);
+
+    final paymentData = _asMap(paymentSetup);
     if (paymentData.isEmpty) {
       throw const FormatException(
         'Payment setup response did not contain data.',
@@ -149,20 +164,26 @@ class StoreRepositoryImpl implements StoreRepository {
       ApiConstants.paymentsProcess,
       data: paymentData,
     );
-    final url = _asMap(_data(processResponse.data))['url'];
-    if (url is! String || url.isEmpty) {
+    final url = PaymobConstants.findPaymentUrl(processResponse.data);
+    if (url == null) {
       throw const FormatException('Payment response did not contain a URL.');
     }
+    return _launchPaymobUrl(url);
+  }
+
+  Future<String> _launchPaymobUrl(String url) async {
     final paymentUri = Uri.tryParse(url);
     if (paymentUri == null ||
-        !paymentUri.hasScheme ||
-        paymentUri.host.isEmpty) {
-      throw const FormatException('Payment response contained an invalid URL.');
+        paymentUri.scheme != 'https' ||
+        !PaymobConstants.isPaymentHost(paymentUri.host)) {
+      throw const FormatException(
+        'Payment response did not contain a valid Paymob HTTPS URL.',
+      );
     }
-    if (!await launchUrl(paymentUri, mode: LaunchMode.externalApplication)) {
-      throw StateError('Could not open the payment gateway.');
+    if (!await launchUrl(paymentUri, mode: LaunchMode.inAppBrowserView)) {
+      throw StateError('Could not open the Paymob payment page.');
     }
-    return url;
+    return paymentUri.toString();
   }
 
   StoreCategory _categoryFromJson(Map<String, dynamic> json) => StoreCategory(
@@ -194,6 +215,7 @@ class StoreRepositoryImpl implements StoreRepository {
       categoryName: category['name']?.toString(),
       categorySlug: category['slug']?.toString(),
       publisher: publisher,
+      visible: _asVisible(json['visible']),
     );
   }
 
@@ -237,6 +259,14 @@ int? _asNullableInt(dynamic value) =>
 
 double _asDouble(dynamic value) =>
     double.tryParse(value?.toString() ?? '') ?? 0;
+
+bool _asVisible(dynamic value) {
+  if (value == null) return true;
+  if (value is bool) return value;
+  if (value is num) return value != 0;
+  final normalized = value.toString().trim().toLowerCase();
+  return normalized != '0' && normalized != 'false' && normalized != 'no';
+}
 
 List<Map<String, dynamic>> _asMapList(dynamic value) {
   if (value is! List) {

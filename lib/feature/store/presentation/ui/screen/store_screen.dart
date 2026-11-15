@@ -6,6 +6,8 @@ import 'package:clean_arch_session/feature/profile/presentation/ui/screen/profil
 import 'package:clean_arch_session/feature/store/domain/entities/store_entities.dart';
 import 'package:clean_arch_session/feature/store/presentation/cubit/store_cubit.dart';
 import 'package:clean_arch_session/feature/store/presentation/cubit/store_state.dart';
+import 'package:clean_arch_session/feature/store/presentation/ui/screen/product_details_screen.dart';
+import 'package:clean_arch_session/feature/store/presentation/ui/screen/checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,7 +40,7 @@ class _StoreScreenState extends State<StoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const titles = ['المتجر', 'المفضلة', 'السلة', 'طلباتي', 'Profile'];
+    const titles = ['Home', 'Favorites', 'My Cart', 'My Orders', 'Profile'];
     return MultiBlocListener(
       listeners: [
         BlocListener<StoreCubit, StoreState>(
@@ -52,7 +54,7 @@ class _StoreScreenState extends State<StoreScreen> {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  content: Text(text, textDirection: TextDirection.rtl),
+                  content: Text(text),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -68,14 +70,9 @@ class _StoreScreenState extends State<StoreScreen> {
                 (route) => false,
               );
               if (state.message.isNotEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      state.message,
-                      textDirection: TextDirection.rtl,
-                    ),
-                  ),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.message)));
               }
             }
           },
@@ -83,35 +80,30 @@ class _StoreScreenState extends State<StoreScreen> {
       ],
       child: Scaffold(
         backgroundColor: AppColors.canvas,
-        appBar: AppBar(
-          backgroundColor: AppColors.canvas,
-          title: Text(titles[_tabIndex], textDirection: TextDirection.rtl),
-          actions: [
-            IconButton(
-              tooltip: 'تحديث',
-              onPressed: _refreshCurrent,
-              icon: const Icon(Icons.refresh_rounded),
-            ),
-            IconButton(
-              tooltip: 'تسجيل الخروج',
-              onPressed: () => context.read<AuthCubit>().logout(),
-              icon: const Icon(Icons.logout_rounded),
-            ),
-            const SizedBox(width: 8),
-          ],
-        ),
-        body: IndexedStack(
-          index: _tabIndex,
-          children: [
-            _CatalogTab(onRefresh: _refreshCatalog),
-            const _FavoritesTab(),
-            const _CartTab(),
-            const _OrdersTab(),
-            ProfileScreen(
-              onOpenFavorites: () => _selectTab(1),
-              onOpenOrders: () => _selectTab(3),
-            ),
-          ],
+        appBar: _tabIndex == 0
+            ? null
+            : AppBar(
+                backgroundColor: AppColors.canvas,
+                title: Text(titles[_tabIndex]),
+              ),
+        body: SafeArea(
+          bottom: false,
+          child: IndexedStack(
+            index: _tabIndex,
+            children: [
+              _CatalogTab(
+                onRefresh: _refreshCatalog,
+                onProfileTap: () => _selectTab(4),
+              ),
+              const _FavoritesTab(),
+              _CartTab(onNavigate: _selectTab),
+              const _OrdersTab(),
+              ProfileScreen(
+                onOpenFavorites: () => _selectTab(1),
+                onOpenOrders: () => _selectTab(3),
+              ),
+            ],
+          ),
         ),
         bottomNavigationBar: NavigationBar(
           selectedIndex: _tabIndex,
@@ -131,12 +123,12 @@ class _StoreScreenState extends State<StoreScreen> {
             const NavigationDestination(
               icon: Icon(Icons.storefront_outlined),
               selectedIcon: Icon(Icons.storefront_rounded),
-              label: 'المتجر',
+              label: 'Home',
             ),
             NavigationDestination(
               icon: const Icon(Icons.favorite_border_rounded),
               selectedIcon: const Icon(Icons.favorite_rounded),
-              label: 'المفضلة',
+              label: 'Faves',
             ),
             NavigationDestination(
               icon: const _CartNavigationIcon(
@@ -145,12 +137,12 @@ class _StoreScreenState extends State<StoreScreen> {
               selectedIcon: const _CartNavigationIcon(
                 icon: Icons.shopping_bag_rounded,
               ),
-              label: 'السلة',
+              label: 'Cart',
             ),
             const NavigationDestination(
               icon: Icon(Icons.receipt_long_outlined),
               selectedIcon: Icon(Icons.receipt_long_rounded),
-              label: 'طلباتي',
+              label: 'Orders',
             ),
             const NavigationDestination(
               icon: Icon(Icons.person_outline_rounded),
@@ -161,21 +153,6 @@ class _StoreScreenState extends State<StoreScreen> {
         ),
       ),
     );
-  }
-
-  void _refreshCurrent() {
-    final store = context.read<StoreCubit>();
-    if (_tabIndex == 1) {
-      store.loadFavorites();
-    } else if (_tabIndex == 2) {
-      store.loadCart();
-    } else if (_tabIndex == 3) {
-      store.loadOrders();
-    } else if (_tabIndex == 4) {
-      context.read<ProfileCubit>().loadProfile();
-    } else {
-      _refreshCatalog();
-    }
   }
 
   void _selectTab(int index) {

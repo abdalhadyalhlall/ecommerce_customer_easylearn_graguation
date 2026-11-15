@@ -64,7 +64,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         state.copyWith(
           profile: profile,
           saving: false,
-          message: 'تم حفظ الملف الشخصي بنجاح',
+          message: 'Profile saved successfully!',
         ),
       );
     } catch (error) {

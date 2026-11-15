@@ -106,6 +106,10 @@ class StoreCubit extends Cubit<StoreState> {
   }
 
   Future<void> toggleFavorite(StoreProduct product) async {
+    if (!product.isVisible) {
+      emit(state.copyWith(error: 'This product is not available.'));
+      return;
+    }
     final wasFavorite = state.isFavorite(product.id);
     await _runAction(() async {
       if (wasFavorite) {
@@ -118,8 +122,8 @@ class StoreCubit extends Cubit<StoreState> {
         state.copyWith(
           favorites: favorites,
           message: wasFavorite
-              ? 'تم حذف المنتج من المفضلة'
-              : 'تمت إضافة المنتج إلى المفضلة',
+              ? 'Product removed from favorites'
+              : 'Product added to favorites',
         ),
       );
     });
@@ -158,12 +162,17 @@ class StoreCubit extends Cubit<StoreState> {
   }
 
   Future<void> addToCart(StoreProduct product, {int quantity = 1}) async {
-    if (!product.isInStock || quantity < 1 || quantity > product.quantity) {
+    if (!product.isVisible ||
+        !product.isInStock ||
+        quantity < 1 ||
+        quantity > product.quantity) {
       emit(
         state.copyWith(
-          error: product.isInStock
-              ? 'الكمية المطلوبة أكبر من المخزون المتاح'
-              : 'هذا المنتج غير متوفر حالياً',
+          error: !product.isVisible
+              ? 'This product is not available.'
+              : product.isInStock
+              ? 'The requested quantity exceeds the available stock.'
+              : 'This product is currently unavailable.',
         ),
       );
       return;
@@ -171,7 +180,7 @@ class StoreCubit extends Cubit<StoreState> {
     await _runAction(() async {
       final items = await _cartUseCases.add(product.id, quantity);
       emit(
-        state.copyWith(cartItems: items, message: 'تمت إضافة المنتج إلى السلة'),
+        state.copyWith(cartItems: items, message: 'Product added to cart.'),
       );
     });
   }
@@ -179,21 +188,23 @@ class StoreCubit extends Cubit<StoreState> {
   Future<void> removeCartItem(CartItem item) async {
     await _runAction(() async {
       final items = await _cartUseCases.remove(item.product.id);
-      emit(state.copyWith(cartItems: items, message: 'تم حذف المنتج من السلة'));
+      emit(state.copyWith(cartItems: items, message: 'Product removed from cart.'));
     });
   }
 
-  Future<void> placeOrder({
+  Future<StoreOrder?> placeOrder({
     required String address,
     required double? latitude,
     required double? longitude,
     required String paymentMethod,
   }) async {
-    if (state.cartItems.isEmpty) return;
+    if (state.cartItems.isEmpty) return null;
     if (paymentMethod != 'cash' && paymentMethod != 'card') {
-      emit(state.copyWith(error: 'طريقة الدفع غير مدعومة'));
-      return;
+      emit(state.copyWith(error: 'This payment method is not supported.'));
+      return null;
     }
+    StoreOrder? placedOrder;
+    var paymentStarted = paymentMethod != 'card';
     await _runAction(() async {
       final order = await _orderUseCases.place(
         items: state.cartItems,
@@ -202,6 +213,7 @@ class StoreCubit extends Cubit<StoreState> {
         longitude: longitude,
         paymentMethod: paymentMethod,
       );
+      placedOrder = order;
       await CartCache.clear();
       emit(
         state.copyWith(
@@ -211,22 +223,33 @@ class StoreCubit extends Cubit<StoreState> {
             ...state.orders.where((existing) => existing.code != order.code),
           ],
           message: paymentMethod == 'card'
-              ? 'تم إنشاء الطلب، جارٍ فتح بوابة الدفع'
-              : 'تم إنشاء الطلب ${order.code} بنجاح',
+              ? 'Order created. Opening the payment gateway...'
+              : 'Order ${order.code} created successfully.',
         ),
       );
       if (paymentMethod == 'card') {
-        final url = await _orderUseCases.pay(order.code);
-        emit(
-          state.copyWith(
-            paymentUrl: url,
-            message: 'تم فتح بوابة الدفع للطلب ${order.code}',
-          ),
-        );
+        try {
+          final url = await _orderUseCases.pay(order.code);
+          paymentStarted = true;
+          emit(
+            state.copyWith(
+              paymentUrl: url,
+              message:
+                  'Paymob opened for order ${order.code}. Complete payment in the browser.',
+            ),
+          );
+        } catch (error) {
+          emit(state.copyWith(error: ApiErrorHandler.getMessage(error)));
+        }
       }
-      final orders = await _orderUseCases.getOrders();
-      emit(state.copyWith(orders: orders));
+      try {
+        final orders = await _orderUseCases.getOrders();
+        emit(state.copyWith(orders: orders));
+      } catch (error) {
+        emit(state.copyWith(error: ApiErrorHandler.getMessage(error)));
+      }
     });
+    return paymentStarted ? placedOrder : null;
   }
 
   Future<StoreOrder?> loadOrderDetails(String code) async {
@@ -244,7 +267,8 @@ class StoreCubit extends Cubit<StoreState> {
       emit(
         state.copyWith(
           paymentUrl: url,
-          message: 'تم فتح بوابة الدفع للطلب ${order.code}',
+          message:
+              'Paymob opened for order ${order.code}. Complete payment in the browser.',
         ),
       );
     });

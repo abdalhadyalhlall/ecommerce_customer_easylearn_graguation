@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:clean_arch_session/core/routes/routes.dart';
 import 'package:clean_arch_session/core/theme/app_colors.dart';
 import 'package:clean_arch_session/feature/auth/presentation/cubit/auth_cubit.dart';
@@ -22,6 +24,9 @@ class _OtpScreenState extends State<OtpScreen> {
     (_) => TextEditingController(),
   );
   final _focusNodes = List.generate(_otpLength, (_) => FocusNode());
+  Timer? _resendMessageTimer;
+  String? _resendMessage;
+  bool _verificationInProgress = false;
 
   @override
   void dispose() {
@@ -31,6 +36,7 @@ class _OtpScreenState extends State<OtpScreen> {
     for (final focusNode in _focusNodes) {
       focusNode.dispose();
     }
+    _resendMessageTimer?.cancel();
     super.dispose();
   }
 
@@ -39,11 +45,24 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void _onDigitChanged(int index, String value) {
     if (value.length > 1) {
-      final digits = value.replaceAll(RegExp(r'\D'), '');
-      for (var i = 0; i < _otpLength; i++) {
-        _controllers[i].text = i < digits.length ? digits[i] : '';
+      final rawDigits = value.replaceAll(RegExp(r'\D'), '');
+      final availableLength = _otpLength - index;
+      final digits = rawDigits.substring(
+        0,
+        rawDigits.length > availableLength ? availableLength : rawDigits.length,
+      );
+      for (var i = index; i < _otpLength; i++) {
+        final digitIndex = i - index;
+        if (digitIndex < digits.length) {
+          _controllers[i].text = digits[digitIndex];
+        }
       }
-      _focusNodes[(digits.length.clamp(1, _otpLength) - 1)].requestFocus();
+      if (index + digits.length == _otpLength) {
+        _focusNodes.last.unfocus();
+        _verify();
+      } else {
+        _focusNodes[index + digits.length].requestFocus();
+      }
       return;
     }
     if (value.isNotEmpty && index < _otpLength - 1) {
@@ -51,16 +70,30 @@ class _OtpScreenState extends State<OtpScreen> {
     } else if (value.isEmpty && index > 0) {
       _focusNodes[index - 1].requestFocus();
     }
+    if (value.isNotEmpty && _otpCode.length == _otpLength) {
+      _focusNodes.last.unfocus();
+      _verify();
+    }
   }
 
   void _verify() {
+    if (_verificationInProgress) return;
     if (_otpCode.length != _otpLength) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Enter the 6-digit verification code')),
       );
       return;
     }
+    _verificationInProgress = true;
     context.read<AuthCubit>().verifyOtp(email: widget.email, otpCode: _otpCode);
+  }
+
+  void _showResendMessage() {
+    _resendMessageTimer?.cancel();
+    setState(() => _resendMessage = 'OTP resent successfully!');
+    _resendMessageTimer = Timer(const Duration(seconds: 4), () {
+      if (mounted) setState(() => _resendMessage = null);
+    });
   }
 
   @override
@@ -91,10 +124,9 @@ class _OtpScreenState extends State<OtpScreen> {
                   (route) => false,
                 );
               } else if (state is AuthOtpResent) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message)));
+                _showResendMessage();
               } else if (state is AuthFailure) {
+                _verificationInProgress = false;
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(SnackBar(content: Text(state.message)));
@@ -148,7 +180,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                     focusNode: _focusNodes[index],
                                     keyboardType: TextInputType.number,
                                     textAlign: TextAlign.center,
-                                    maxLength: 1,
+                                    maxLength: _otpLength,
                                     inputFormatters: [
                                       FilteringTextInputFormatter.digitsOnly,
                                     ],
@@ -191,6 +223,18 @@ class _OtpScreenState extends State<OtpScreen> {
                             );
                           }),
                         ),
+                        if (_resendMessage != null) ...[
+                          const SizedBox(height: 15),
+                          Text(
+                            _resendMessage!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: AppColors.success,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 22),
                         AppButton(
                           text: 'Verify OTP',
@@ -227,8 +271,36 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 }
 
-class VerificationSuccessScreen extends StatelessWidget {
+class VerificationSuccessScreen extends StatefulWidget {
   const VerificationSuccessScreen({super.key});
+
+  @override
+  State<VerificationSuccessScreen> createState() =>
+      _VerificationSuccessScreenState();
+}
+
+class _VerificationSuccessScreenState extends State<VerificationSuccessScreen> {
+  Timer? _navigationTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _navigationTimer = Timer(const Duration(milliseconds: 1800), () {
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.store,
+          (route) => false,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _navigationTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -269,21 +341,6 @@ class VerificationSuccessScreen extends StatelessWidget {
                   const Text(
                     'Welcome to Easy Shop',
                     style: TextStyle(color: AppColors.muted, fontSize: 12),
-                  ),
-                  const SizedBox(height: 28),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                      ),
-                      onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        Routes.store,
-                        (route) => false,
-                      ),
-                      child: const Text('Continue shopping'),
-                    ),
                   ),
                 ],
               ),

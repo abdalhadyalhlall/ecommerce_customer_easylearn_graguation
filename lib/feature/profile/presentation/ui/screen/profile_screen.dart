@@ -59,7 +59,7 @@ class ProfileScreen extends StatelessWidget {
         return RefreshIndicator(
           onRefresh: context.read<ProfileCubit>().loadProfile,
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
             children: [
               if (state.error != null || state.message != null) ...[
                 ProfileFeedback(
@@ -75,18 +75,12 @@ class ProfileScreen extends StatelessWidget {
                 imageUrl: profile.pictureUrl,
               ),
               const SizedBox(height: 12),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: AppColors.shadow,
-                      blurRadius: 12,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
+              Material(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(18),
+                elevation: 2,
+                shadowColor: AppColors.shadow,
+                clipBehavior: Clip.antiAlias,
                 child: Column(
                   children: [
                     ProfileMenuTile(
@@ -179,10 +173,10 @@ class _ProfileSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(17),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppColors.border.withValues(alpha: 0.65)),
         boxShadow: const [
           BoxShadow(
@@ -194,8 +188,8 @@ class _ProfileSummary extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ProfileAvatar(imageUrl: imageUrl, name: name, radius: 22),
-          const SizedBox(width: 12),
+          ProfileAvatar(imageUrl: imageUrl, name: name, radius: 29),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,7 +200,7 @@ class _ProfileSummary extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: AppColors.ink,
-                    fontSize: 13,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -217,14 +211,14 @@ class _ProfileSummary extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: AppColors.muted,
-                    fontSize: 10,
+                    fontSize: 12,
                   ),
                 ),
                 Text(
                   phone,
                   style: const TextStyle(
                     color: AppColors.muted,
-                    fontSize: 9,
+                    fontSize: 11,
                   ),
                 ),
               ],

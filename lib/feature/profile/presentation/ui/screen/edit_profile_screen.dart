@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:clean_arch_session/core/helpers/image_picker_helper.dart';
+import 'package:clean_arch_session/core/helpers/location_picker_helper.dart';
 import 'package:clean_arch_session/core/theme/app_colors.dart';
 import 'package:clean_arch_session/core/widgets/app_button.dart';
 import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_cubit.dart';
@@ -7,7 +9,7 @@ import 'package:clean_arch_session/feature/profile/presentation/cubit/profile_st
 import 'package:clean_arch_session/feature/profile/presentation/ui/widget/profile_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -24,7 +26,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _addressController = TextEditingController();
   final _latitudeController = TextEditingController();
   final _longitudeController = TextEditingController();
-  final _picker = ImagePicker();
   Uint8List? _pictureBytes;
   String? _pictureFileName;
 
@@ -54,10 +55,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _pickPicture() async {
     try {
-      final image = await _picker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 85,
-      );
+      final image = await ImagePickerHelper.showPicker(context);
       if (image == null) return;
       final bytes = await image.readAsBytes();
       if (!mounted) return;
@@ -65,98 +63,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _pictureBytes = bytes;
         _pictureFileName = image.name;
       });
+    } on PickImageFailure catch (failure) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.message)),
+      );
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not select picture: $error')),
+        SnackBar(content: Text('Could not read the selected picture: $error')),
       );
     }
   }
 
   Future<void> _editLocation() async {
-    final latitude = TextEditingController(text: _latitudeController.text);
-    final longitude = TextEditingController(text: _longitudeController.text);
-    final formKey = GlobalKey<FormState>();
-    final result = await showDialog<(String, String)>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delivery Location'),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: latitude,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                  signed: true,
-                ),
-                validator: _validateLatitude,
-                decoration: const InputDecoration(labelText: 'Latitude'),
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: longitude,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                  signed: true,
-                ),
-                validator: _validateLongitude,
-                decoration: const InputDecoration(labelText: 'Longitude'),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (!formKey.currentState!.validate()) return;
-              Navigator.pop(context, (
-                latitude.text.trim(),
-                longitude.text.trim(),
-              ));
-            },
-            child: const Text('Save location'),
-          ),
-        ],
-      ),
+    final latitude = double.tryParse(_latitudeController.text.trim());
+    final longitude = double.tryParse(_longitudeController.text.trim());
+    final result = await LocationPickerHelper.pickLocation(
+      context,
+      initialLocation: latitude == null || longitude == null
+          ? null
+          : LatLng(latitude, longitude),
     );
-    latitude.dispose();
-    longitude.dispose();
     if (result == null || !mounted) return;
     setState(() {
-      _latitudeController.text = result.$1;
-      _longitudeController.text = result.$2;
+      _latitudeController.text = result.latitude.toStringAsFixed(6);
+      _longitudeController.text = result.longitude.toStringAsFixed(6);
     });
-  }
-
-  bool _validCoordinate(
-    String value, {
-    required double min,
-    required double max,
-  }) {
-    if (value.trim().isEmpty) return true;
-    final coordinate = double.tryParse(value.trim());
-    return coordinate != null && coordinate >= min && coordinate <= max;
-  }
-
-  String? _validateLatitude(String? value) {
-    if (value == null || _validCoordinate(value, min: -90, max: 90)) {
-      return null;
-    }
-    return 'Enter a latitude between -90 and 90';
-  }
-
-  String? _validateLongitude(String? value) {
-    if (value == null || _validCoordinate(value, min: -180, max: 180)) {
-      return null;
-    }
-    return 'Enter a longitude between -180 and 180';
   }
 
   String? _validateEmail(String? value) {
@@ -332,7 +265,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final latitude = _latitudeController.text.trim();
     final longitude = _longitudeController.text.trim();
     if (latitude.isEmpty && longitude.isEmpty) {
-      return 'Location — tap to add coordinates';
+      return 'Location — tap to update on map';
     }
     return 'Location — $latitude, $longitude';
   }

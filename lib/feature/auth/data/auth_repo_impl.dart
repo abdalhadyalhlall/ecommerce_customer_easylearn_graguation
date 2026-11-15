@@ -97,6 +97,6 @@ class AuthRepoImpl implements AuthRepo {
     await CacheHelper.deleteSecureData(key: CacheConstants.userToken);
     await CartCache.clear();
     await ProfileCache.clear();
-    return 'تم تسجيل الخروج بنجاح';
+    return 'Signed out successfully.';
   }
 }
